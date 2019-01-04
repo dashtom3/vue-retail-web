@@ -1,0 +1,1276 @@
+<template>
+  <div class="cameraPage">
+    <div class="backwhite">
+      <p class="title">门店数据报告</p>
+      <p class="titleBig_distance"></p>
+      <p class="big_title">数据总览</p>
+      <p class="titleHead_distance">{{searchTime.from_date}}-{{searchTime.to_date}} &nbsp ({{searchTime.from_time}}~{{searchTime.to_time}}) </p>
+      <p class="titleHead_distance">客流总量:
+        <span>{{analyse_titleDate.allPeople}}</span>
+      </p>
+      <div class="alltitle">
+        <div class="alltitle_left">
+          <div class="left_title">
+            <div class="title_all">
+              <span>最小日客流量</span>
+              <span>{{analyse_titleDate.minAvg}}</span>
+            </div>
+            <div class="title_all">
+              <span>最大日客流量</span>
+              <span>{{analyse_titleDate.maxAvg}}</span>
+            </div>
+          </div>
+          <div id="TotalStateArg" style="width:100%;height:400px;display:inline-block"></div>
+        </div>
+        <div class="alltitle_left">
+          <div class="left_title">
+            <div class="title_all">
+              <span>最小日均</br>逗留时长</span>
+              <span>{{analyse_titleDate.minStateAvg}}分</span>
+            </div>
+            <div class="title_all">
+              <span>最大日均</br>逗留时长</span>
+              <span>{{analyse_titleDate.maxStateAvg}}分</span>
+            </div>
+          </div>
+          <div id="flowTotal" style="width:100%;height:400px;display:inline-block"></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <p class="stateSpicy_title">商品关注</p>
+      <div id="hotPicture" style="width: 100%;height:500px;"></div>
+    </div>
+    <div>
+      <p class="titleBig_distance"></p>
+      <p class="daytotal_title">消费者画像</p>
+      <div id="sexAnalyse" style="width: 48%;height:400px;display:inline-block"></div>
+      <div id="ageAnalyse" style="width: 50%;height:400px;display:inline-block"></div>
+    </div>
+    <p class="titleBig_distance"></p>
+    <p class="big_title">监测分析</p>
+    <div class="backwhite">
+      <p class="titleBig_distance"></p>
+      <p class="daytotal_title">客流情况</p>
+      <p class="small_title">日客流量变化</p>
+      <div id="day_camera" style="width: 100%;height:600px;"></div>
+      <p class="small_title">日客流量变化详情</p>
+      <el-table :data="dayTotalData" border style="min-width: 800px">
+        <el-table-column v-for="(value,key,index) in dayTotalData[0]" :prop="key" :label="key" align="center">
+        </el-table-column>
+      </el-table>
+    </div>
+
+    <div class="backwhite">
+      <p class="titleBig_distance"></p>
+      <p class="small_title">日逗留时长变化</p>
+      <div id="stateArg" style="width: 100%;height:600px;"></div>
+      <p class="small_title">日逗留时长变化详情</p>
+      <el-table :data="averageStateTime" border style="min-width: 800px">
+        <el-table-column v-for="(value,key,index) in averageStateTime[0]" :prop="key" :label="key" align="center">
+        </el-table-column>
+      </el-table>
+    </div>
+
+    <div class="backwhite">
+      <p class="small_title">分时段客流量变化</p>
+      <div id="main_camera" style="width: 100%;height:500px;"></div>
+      <p class="small_title">分时段客流量变化详情</p>
+      <el-table :data="totalPTableData" border style="min-width: 800px">
+        <el-table-column v-for="(value,key,index) in totalPTableData[0]" :prop="key" :label="key" align="center">
+        </el-table-column>
+      </el-table>
+    </div>
+
+    <div class="backwhite">
+      <p class="titleBig_distance"></p>
+      <p class="small_title">分时段客人逗留分布趋势</p>
+      <div :id="'timeSpicy'+n" v-for='n in timeSpicyTemp.length' :style="{'width': 100/timeSpicyTemp.length +'%','height':'650px','display':timeSpicyTemp.length>1?'inline-block':'block'}"></div>
+      <p class="small_title">分时段客人逗留分布趋势详情</p>
+      <el-table :data="timeTotalDate" border style="min-width: 800px">
+        <el-table-column v-for="(value,key,index) in timeTotalDate[0]" :prop="key" :label="key" align="center">
+        </el-table-column>
+      </el-table>
+    </div>
+
+    <div>
+      <p class="titleBig_distance"></p>
+      <p class="daytotal_title">关注情况</p>
+      <p class="stateSpicy_title">日关注度分布</p>
+      <p class="third_title">停留10秒以上客流分布对比</p>
+      <div id="hotStateFifteen" style="width: 100%;height:500px;"></div>
+      <p class="third_title">停留10秒以上客流分布对比详情</p>
+      <el-table :data="hotDataStayten" border style="min-width: 800px">
+        <el-table-column v-for="(value,key,index) in hotDataStayten[0]" :prop="key" :label="key" align="center">
+        </el-table-column>
+      </el-table>
+    </div>
+
+    <div>
+      <p class="titleBig_distance"></p>
+      <p class="third_title">停留30秒以上客流分布对比</p>
+      <div id="hotStateThirty" style="width: 100%;height:500px;"></div>
+      <p class="third_title">停留30秒以上客流分布对比详情</p>
+      <el-table :data="hotDataStayThirty" border style="min-width: 800px">
+        <el-table-column v-for="(value,key,index) in hotDataStayThirty[0]" :prop="key" :label="key" align="center">
+        </el-table-column>
+      </el-table>
+    </div>
+
+    <div>
+      <p class="titleBig_distance"></p>
+      <p class="third_title">停留60秒以上客流分布对比</p>
+      <div id="hotStateSixty" style="width: 100%;height:500px;"></div>
+      <p class="third_title">停留60秒以上客流分布对比详情</p>
+      <el-table :data="hotDataStaySixty" border style="min-width: 800px">
+        <el-table-column v-for="(value,key,index) in hotDataStaySixty[0]" :prop="key" :label="key" align="center">
+        </el-table-column>
+      </el-table>
+    </div>
+
+    <div>
+      <p class="titleBig_distance"></p>
+      <p class="stateSpicy_title">工作日节假日关注度对比</p>
+      <div :id="'hotAvgStateFifteen'+n" v-for=" n in hotDataAvgStayFifteentemp.length" :style="{'width': 100/hotDataAvgStayFifteentemp.length +'%','height':'500px','display':hotDataAvgStayFifteentemp.length>1?'inline-block':'block'}"></div>
+      <p class="third_title">各时段关注度详情(10秒以上)</p>
+      <el-table :data="hotDataAvgStayFifteen" border style="min-width: 800px">
+        <el-table-column v-for="(value,key,index) in hotDataAvgStayFifteen[0]" :prop="key" :label="key" align="center">
+        </el-table-column>
+      </el-table>
+    </div>
+
+    <div>
+      <p class="titleBig_distance"></p>
+      <div :id="'hotAvgStateThirty'+n" v-for=" n in hotDataAvgStayThirtytemp.length" :style="{'width': 100/hotDataAvgStayThirtytemp.length +'%','height':'500px','display':hotDataAvgStayThirtytemp.length>1?'inline-block':'block'}"></div>
+      <p class="third_title">各时段关注度详情(30秒以上)</p>
+      <el-table :data="hotDataAvgStayThirty" border style="min-width: 800px">
+        <el-table-column v-for="(value,key,index) in hotDataAvgStayThirty[0]" :prop="key" :label="key" align="center">
+        </el-table-column>
+      </el-table>
+    </div>
+
+    <div>
+      <p class="titleBig_distance"></p>
+      <div :id="'hotAvgStateSixty'+n" v-for=" n in hotDataAvgStaySixtytemp.length" :style="{'width': 100/hotDataAvgStaySixtytemp.length +'%','height':'500px','display':hotDataAvgStaySixtytemp.length>1?'inline-block':'block'}"></div>
+      <p class="third_title">各时段关注度详情(60秒以上)</p>
+      <el-table :data="hotDataAvgStaySixty" border style="min-width: 800px">
+        <el-table-column v-for="(value,key,index) in hotDataAvgStaySixty[0]" :prop="key" :label="key" align="center">
+        </el-table-column>
+      </el-table>
+    </div>
+  </div>
+</template>
+
+<script>
+import echarts from "echarts";
+import analyseTable from "../../analyse/tableAnalyse";
+import intAllEcharts from "../../analyse/echartsAnalyse";
+export default {
+  name: "",
+  data() {
+    return {
+      searchTime: {
+        from_date: null,
+        to_date: null,
+        from_time: null,
+        to_time: null
+      },
+      startHour: "", //从url中获取的开始时间
+      endHour: "", //从url中获取的结束时间
+
+      allFlowPeople: [],
+      totalPTableData: [], //分时段表格处理数据
+      totalPData: [], //接口原始数据
+      dayTotalPData: [], //按天接口原数据
+      dayTotalData: [], //按日表格处理数据
+
+      timeTotalDate: [], //分时段比重表格数据
+      daytotalEnter: {}, //当天总人数
+
+      hotDataAll: [], //热度分析总览
+      hotDataStayten: [], //驻足时间日统计10秒,
+      hotDataStayThirty: [], //驻足时间日统计30秒
+      hotDataStaySixty: [], //驻足时间日统计60秒
+
+      hotDataAvgStayFifteentemp: [], //15秒echarts工作日和节假日分组
+      hotDataAvgStayThirtytemp: [], //30秒echarts工作日和节假日分组
+      hotDataAvgStaySixtytemp: [], //60秒echats工作日和节假日分组
+      //平均分时段逗留人数15秒
+      hotDataAvgStayFifteen: [],
+      //平均分时段逗留人数30秒
+      hotDataAvgStayThirty: [],
+      //平均分时段逗留人数60秒
+      hotDataAvgStaySixty: [],
+
+      averageStateTime: [], //客均逗留时长表格数据
+
+      timeSpicyTemp: [], //逗留柱状图分组数据
+      analyse_titleDate: {
+        allPeople: null,
+        minAvg: null,
+        maxAvg: null,
+        minStateAvg: null,
+        maxStateAvg: null
+      },
+      sexField: {
+        femaleNum: "女性",
+        maleNum: "男性"
+      },
+      ageField: {
+        zeroEighteen: "0-18",
+        eighteenTwentyEight: "19-29",
+        twentyEightForty: "30-39",
+        fortySixtyFive: "40-64",
+        sixtyFiveMore: "65+"
+      }
+    };
+  },
+  mounted() {
+    console.log(
+      this.$route.query.id,
+      this.$route.query.from_time,
+      this.$route.query.to_time
+    );
+    this.searchTime = {
+      from_date: this.$dtime(this.$route.query.from_time)
+        .format("YYYY-MM-DD")
+        .replace(/-/g, ""),
+      to_date: this.$dtime(this.$route.query.to_time)
+        .format("YYYY-MM-DD")
+        .replace(/-/g, ""),
+      from_time: this.$dtime(this.$route.query.from_time).format("HH:mm"),
+      to_time: this.$dtime(this.$route.query.to_time).format("HH:mm")
+    };
+    this.startHour = parseInt(
+      this.$dtime(this.$route.query.from_time).format("HH")
+    );
+    this.endHour = parseInt(
+      this.$dtime(this.$route.query.to_time).format("HH")
+    );
+    this.getCameraData(); //获取进店客流接口数据
+    /*echats图表初始化*/
+    this.intEacharts(); //echarts初始化
+
+    this.getHotData(); //调用区域关注热度接口
+    this.getTenData(); //调用区域关注10s接口
+    this.getThirtyData(); //调用区域关注30s接口
+    this.getSixtyData(); //调用区域关注60s接口
+    // 区域关注度平均分时段接口调用  10s,30s,60s
+    this.getAvgTenData();
+    this.getAvgThirdData();
+    this.getAvgSixtyData();
+    this.getPeopleAnalyseData(); //消费者画像
+  },
+  methods: {
+    intEacharts() {
+      intAllEcharts.intFlowTotal(); //客流总量仪表盘初始化
+      intAllEcharts.intTotalStateArg(); //客均逗留时长表盘初始化
+      intAllEcharts.intHoChart(); //热度图总览
+        //消费者画像echarts初始化(年龄分析和男女分析)
+      intAllEcharts.intAgeEcharts();
+      intAllEcharts.intSexEcharts();
+
+      intAllEcharts.intDayChart(); //日统计初始化echarts
+      intAllEcharts.intDayParting(); //分时段初始化echarts
+      intAllEcharts.intStateArg(); //日均逗留时长echarts初始化
+
+      intAllEcharts.intStateFifteen(); //热度停留15秒初始化
+      intAllEcharts.intStateThirty(); //热度30秒初始化
+      intAllEcharts.intStateSixty(); //热度60秒初始化
+    },
+    /*************获取接口模块***************/
+    //获取进店客流接口数据
+    getCameraData() {
+      let data = {
+        id: this.$route.query.id,
+        from_time: this.$route.query.from_time,
+        to_time: this.$route.query.to_time
+      };
+      this.$global.httpGet("", "/show/hkrl/byhour", data).then(res => {
+        this.totalPData = res.data.data;
+        if (res.data.total) {
+          this.analyse_titleDate.allPeople = res.data.total[0].enter;
+        }
+        this.analyseTotalP(); //分时段表格处理
+        this.analyseEacharts(); //分时段echarts数据处理
+
+        this.$global.httpGet("", "/show/hkrl/byday", data).then(res => {
+          this.dayTotalPData = res.data.data;
+          this.analyseDay();//调用日数据表格方法
+        });
+      });
+    },
+
+    /*************************************************/
+
+    /********************每日进店客流模块 *****************************/
+    //日数据表格处理
+    analyseDay() {
+      var dayX = [],dayY = [],temdata = [];
+      var resData = analyseTable.analyseDay(this.dayTotalPData);
+      this.daytotalEnter = resData.daytotalEnter;
+      this.dayTotalData = resData.dayTotalData;
+
+      for (let k in resData.daytotalEnter) {
+        dayX.push(k);
+        temdata.push(resData.daytotalEnter[k]);
+      }
+
+      /* 更新仪表盘平均客流数据 */
+      var max = Math.max.apply(Math, temdata);
+      var min = Math.min.apply(Math, temdata);
+      this.analyse_titleDate.minAvg = min;
+      this.analyse_titleDate.maxAvg = max;
+      var avg = this.avg(temdata).toFixed(0);
+      var avgDate = [{ value: avg }];
+
+      intAllEcharts.setAllTotalOptions(min, max, avgDate);
+      dayY.push(
+        {
+          name: "日客流",
+          type: "bar",
+          barWidth: 60,
+          label: { normal: { show: true, position: "top" } },
+          data: temdata
+        },
+        { name: "", type: "line", data: temdata }
+      );
+      intAllEcharts.setDayOption(dayX, dayY); //日数据echarts更新
+
+      this.getStateArgData(); //调用日逗留时长方法
+      this.analyseTime(); //分时段比重表格数据处理函数
+    },
+    /*******************************************************/
+
+    /****************每日客均逗留时长模块*********************/
+    getStateArgData() {
+      var data = {
+        from_time: this.$dtime(this.$route.query.from_time).format("YYYY-MM-DD"),
+        to_time: this.$dtime(this.$route.query.to_time).format("YYYY-MM-DD"),
+        from_hour: 5,
+        hours: 24
+      };
+      this.$global.httpGet("", "/show/hkdl/byDay", data).then(res => {
+        var dataTemp = [],legenddata = [],seriesData = [];
+        var dateArg = { 日期: "逗留时长" };
+        for (var i of res.data) {
+          var dateTime =
+            this.$dtime(i.date).format("YYYY-MM-DD") +
+            "(" +
+            this.$dtime(i.date).format("dddd") +
+            ")";
+          legenddata.push(dateTime);
+          seriesData.push(i.time);
+          dateArg[dateTime] = i.time;
+        }
+        dataTemp.push(dateArg);
+        this.averageStateTime = dataTemp;
+        // 更新逗留时长分析
+        var max = Math.max.apply(Math, seriesData);
+        var min = Math.min.apply(Math, seriesData);
+        this.analyse_titleDate.minStateAvg = min.toFixed(0);
+        this.analyse_titleDate.maxStateAvg = max.toFixed(0);
+        var avg = this.avg(seriesData).toFixed(0);
+        //总览逗留时长更新
+        intAllEcharts.setTotalStateArg(min, max, avg);
+        //逗留时长图表分析
+        intAllEcharts.setStateArg(legenddata, seriesData);
+      });
+    },
+    /*******************************************************/
+
+    /**********************分时段进店客流模块***************/
+
+    //分时段echarts数据处理
+    analyseEacharts() {
+      var YDate = [],
+        title = [],
+        Xdata = [];
+      var chartDate = [];
+      if (this.totalPData.length > 0) {
+        var temp =  this.$dtime(this.totalPData[0].start_time).format("YYYY-MM-DD") + "(" + this.$dtime(this.totalPData[0].start_time).format("dddd") + ")";
+        chartDate.push({ name: temp });
+        this.totalPData.forEach((res, index) => {
+          var tempHour = this.$dtime(res.start_time).format("HH:mm");
+          var tempHour2 = parseInt(this.$dtime(res.start_time).format("HH"));
+          if (tempHour2 >= this.startHour && tempHour2 <= this.endHour) {
+            var tempDate =
+              this.$dtime(res.start_time).format("YYYY-MM-DD") + "(" + this.$dtime(res.start_time).format("dddd") + ")";
+            if (temp == tempDate) {
+              chartDate[chartDate.length - 1][tempHour] = res.enter;
+            } else {
+              temp = tempDate;
+              var tempRes = { name: tempDate };
+              var tempRes1 = { name: tempDate };
+              tempRes[tempHour] = res.enter;
+              tempRes1[tempHour] = res.exit;
+              chartDate.push(tempRes);
+            }
+          }
+        });
+        for (let i = this.startHour; i <= this.endHour; i++) {
+             Xdata.push(i + ":00");
+          }
+        chartDate.forEach(item => {
+          var arr = [];
+          for (let d in item) {
+            arr.push(item[d]);
+          }
+          arr.shift();
+          YDate.push({
+            name: item.name,
+            type: "line",
+            smooth: true,
+            data: arr,
+            label: {
+              normal: {
+                show: true,
+                position: "top"
+              }
+            }
+          });
+
+          title.push(item.name);
+        });
+        intAllEcharts.setOptions(title, Xdata, YDate);
+      }
+    },
+    //分时段表格处理数据
+    analyseTotalP() {
+      var totalDate = {};
+      if (this.totalPData.length > 0) {
+        var temp = this.$dtime(this.totalPData[0].start_time).format("YYYY-MM-DD") + "(" + this.$dtime(this.totalPData[0].start_time).format("dddd") + ")";
+        this.totalPData.forEach(res => {
+          var tempDate = this.$dtime(res.start_time).format("YYYY-MM-DD") + "(" + this.$dtime(res.start_time).format("dddd") + ")";
+          var tempHour2 = parseInt(this.$dtime(res.start_time).format("HH"));
+          if (tempHour2 >= this.startHour && tempHour2 <= this.endHour) {
+              var tempHour = this.$dtime(res.start_time).format("HH:mm");
+              if (temp == tempDate) {
+                var dateObject = { 时间: "" };
+                dateObject[tempDate] = res.enter;
+                totalDate[tempHour] = dateObject;
+              } else {
+                var tempRes = { 时间: "" };
+                tempRes[tempDate] = res.enter;
+                totalDate[tempHour][tempDate] = res.enter;
+              }
+          }
+        });
+        var totalPTableDataTemp = [];
+        for (let k in totalDate) {
+          totalDate[k]["时间"] = k;
+          totalPTableDataTemp.push(totalDate[k]);
+        }
+        this.totalPTableData = totalPTableDataTemp;
+      }
+    },
+    /*****************************************************/
+
+    /***************分时段逗留客流分布比重模块*******************/
+
+    //分析时段比重表格数据处理
+    analyseTime() {
+      var totalDate = {};
+      var timeSpicy = {};
+      if (this.totalPData.length > 0) {
+        var temp =
+          this.$dtime(this.totalPData[0].start_time).format("YYYY-MM-DD") +
+          "(" +
+          this.$dtime(this.totalPData[0].start_time).format("dddd") +
+          ")";
+        this.totalPData.forEach(res => {
+          var tempDate =
+            this.$dtime(res.start_time).format("YYYY-MM-DD") +
+            "(" +
+            this.$dtime(res.start_time).format("dddd") +
+            ")";
+          var tempHour2 = parseInt(this.$dtime(res.start_time).format("HH"));
+          if (tempHour2 >= this.startHour && tempHour2 <= this.endHour) {
+            var tempHour = this.$dtime(res.start_time).format("HH:mm");
+            if (temp == tempDate) {
+              var dateObject = { 时间: "" };
+              if (this.daytotalEnter[tempDate] == 0) {
+                dateObject[tempDate] = 0 + "%";
+                totalDate[tempHour] = dateObject;
+              } else {
+                dateObject[tempDate] =
+                  Math.round(res.enter / this.daytotalEnter[tempDate] * 1000) /
+                    10 +
+                  "%";
+                totalDate[tempHour] = dateObject;
+              }
+            } else {
+              var tempRes = { 时间: "" };
+              tempRes[tempDate] = res.enter;
+              if (this.daytotalEnter[tempDate] == 0) {
+                totalDate[tempHour][tempDate] = 0 + "%";
+              } else {
+                totalDate[tempHour][tempDate] =
+                  Math.round(res.enter / this.daytotalEnter[tempDate] * 1000) /
+                    10 +
+                  "%";
+              }
+            }
+          }
+        });
+        var timeTotalDateTemp = [];
+        for (let k in totalDate) {
+          totalDate[k]["时间"] = k;
+          timeTotalDateTemp.push(totalDate[k]);
+        }
+        this.timeTotalDate = timeTotalDateTemp;
+        this.analyseTimeSpicy();
+      }
+    },
+    //分时段逗留比重echarts数据处理
+    analyseTimeSpicy() {
+      var echartsTimeSpicyData = [];
+      if (this.totalPData.length > 0) {
+        var temp =
+          this.$dtime(this.totalPData[0].start_time).format("YYYY-MM-DD") +
+          "(" +
+          this.$dtime(this.totalPData[0].start_time).format("dddd") +
+          ")";
+        echartsTimeSpicyData.push({ name: temp });
+        this.totalPData.forEach(res => {
+          var tempHour = this.$dtime(res.start_time).format("HH:mm");
+          var tempHour2 = parseInt(this.$dtime(res.start_time).format("HH"));
+          if (tempHour2 >= this.startHour && tempHour2 <= this.endHour) {
+            var tempDate =
+              this.$dtime(res.start_time).format("YYYY-MM-DD") +
+              "(" +
+              this.$dtime(res.start_time).format("dddd") +
+              ")";
+            if (temp == tempDate) {
+              echartsTimeSpicyData[echartsTimeSpicyData.length - 1][tempHour] =
+                Math.round(res.enter / this.daytotalEnter[tempDate] * 1000) /
+                10;
+            } else {
+              temp = tempDate;
+              var tempRes = { name: tempDate };
+              tempRes[tempHour] =
+                Math.round(res.enter / this.daytotalEnter[tempDate] * 1000) /
+                10;
+              echartsTimeSpicyData.push(tempRes);
+            }
+          }
+        });
+        var totaltitle = [],
+          totalyAxis = [],
+          totalseries = [];
+        for (let i = this.startHour; i <= this.endHour; i++) {
+          totalyAxis.push(i + ":00");
+        }
+        echartsTimeSpicyData.forEach(item => {
+          totaltitle.push(item.name);
+          var arr = [];
+          for (let d in item) {
+            if (item[d] == 0) {
+              arr.push("");
+            } else {
+              arr.push(item[d]);
+            }
+          }
+          arr.shift();
+          totalseries.push({
+            name: item.name,
+            data: arr,
+            type: "bar",
+            barWidth: 8,
+            label: {
+              normal: { show: true, position: "insideRight", formatter: "{c}%" }
+            }
+          });
+        });
+
+        this.timeSpicyTemp = this.chunk(totaltitle, 7);
+        intAllEcharts.intTimeChart(this, this.timeSpicyTemp); //分时段客流比重初始化
+        this.$nextTick(() => {
+          for (let i = 1; i <= this.timeSpicyTemp.length; i++) {
+            var myChart = echarts.init(
+              document.getElementById("timeSpicy" + i)
+            );
+            myChart.setOption({
+              legend: {
+                data: this.chunk(totaltitle, 7)[i - 1]
+              },
+              yAxis: {
+                data: totalyAxis
+              },
+              series: this.chunk(totalseries, 7)[i - 1]
+            });
+            window.onresize = function() {
+              myChart.resize(); //若有多个图表变动，可多写
+            };
+          }
+        });
+      }
+    },
+    /******************************************************/
+
+    /********************热度图总览模块******************/
+
+    //获取区域热度总览接口数据
+    getHotData() {
+      var data = {
+        from_time: this.$dtime(this.$route.query.from_time).format(
+          "YYYY-MM-DD"
+        ),
+        to_time: this.$dtime(this.$route.query.to_time).format("YYYY-MM-DD"),
+        staySecond: "10,30,60"
+      };
+      this.$global.httpGet("", "/show/hkrq/byall", data).then(res => {
+        var staydata = {};
+        for (var i = 0; i < res.data.length; i++) {
+          if (!staydata[res.data[i].name]) {
+            var arr = [];
+            arr.push(res.data[i]);
+            staydata[res.data[i].name] = arr;
+          } else {
+            staydata[res.data[i].name].push(res.data[i]);
+          }
+        }
+        var hotDataAllTemp = [];
+        for (var j in staydata) {
+          var alldata = { 逗留时长: "" };
+          for (var k of staydata[j]) {
+            alldata["逗留时长"] = j;
+            alldata[k.areaName] = k.stayPeopleCount;
+          }
+          hotDataAllTemp.push(alldata);
+        }
+        /***/
+
+        // this.hotDataAll = hotDataAllTemp;
+        var yAxisData = [],
+          allserisData = [];
+
+        for (var n in hotDataAllTemp[0]) {
+          yAxisData.push(n);
+        }
+        yAxisData.shift();
+        for (var k of hotDataAllTemp) {
+          var seriesData = [];
+          for (var l in k) {
+            seriesData.push(k[l]);
+          }
+          var name = seriesData.shift();
+          allserisData.push({
+            name: name,
+            type: "bar",
+            label: { normal: { show: true, position: "insideRight" } },
+            data: seriesData
+          });
+        }
+        //更新热度总览echarts
+        var myChart = echarts.init(document.getElementById("hotPicture"));
+        myChart.setOption({
+          yAxis: {
+            data: yAxisData
+          },
+          series: allserisData
+        });
+      });
+    },
+
+    /************驻足停留人数日统计模块*****************/
+
+    getTenData() {
+      //驻足10秒 日统计
+      var data = {
+        from_time: this.$dtime(this.$route.query.from_time).format(
+          "YYYY-MM-DD HH:mm:ss"
+        ),
+        to_time: this.$dtime(this.$route.query.to_time).format(
+          "YYYY-MM-DD HH:mm:ss"
+        ),
+        staySecond: "10"
+      };
+      this.$global.httpGet("", "/show/hkrq/byday", data).then(res => {
+        /****/
+        this.hotDataStayten = analyseTable.analyseQUYUData(res.data);
+        var legenddata = [],
+          xAxisdata = [],
+          allyAxisdata = [];
+        for (var n in analyseTable.analyseQUYUData(res.data)[0]) {
+          xAxisdata.push(n);
+        }
+        xAxisdata.shift();
+
+        for (var m of analyseTable.analyseQUYUData(res.data)) {
+          legenddata.push(m["日期"]);
+          var yAxisdata = [];
+          for (var k in m) {
+            yAxisdata.push(m[k]);
+          }
+          var name = yAxisdata.shift();
+
+          allyAxisdata.push({
+            name: name,
+            type: "bar",
+            label: { normal: { show: true, position: "top" } },
+            data: yAxisdata
+          });
+          allyAxisdata[0].type = "line";
+          allyAxisdata[0].label = "";
+        }
+        //echarts更新
+        var myChart = echarts.init(document.getElementById("hotStateFifteen"));
+        myChart.setOption({
+          legend: {
+            data: legenddata
+          },
+          xAxis: [
+            {
+              data: xAxisdata
+            }
+          ],
+          series: allyAxisdata
+        });
+      });
+    },
+
+    //驻足30秒 日统计
+    getThirtyData() {
+      //30秒
+      var data = {
+        from_time: this.$dtime(this.$route.query.from_time).format(
+          "YYYY-MM-DD"
+        ),
+        to_time: this.$dtime(this.$route.query.to_time).format("YYYY-MM-DD"),
+        staySecond: "30"
+      };
+      this.$global.httpGet("", "/show/hkrq/byday", data).then(res => {
+        /******/
+        this.hotDataStayThirty = analyseTable.analyseQUYUData(res.data);
+        var legenddata = [],
+          xAxisdata = [],
+          allyAxisdata = [];
+        for (var n in analyseTable.analyseQUYUData(res.data)[0]) {
+          xAxisdata.push(n);
+        }
+        xAxisdata.shift();
+
+        for (var m of analyseTable.analyseQUYUData(res.data)) {
+          legenddata.push(m["日期"]);
+          var yAxisdata = [];
+          for (var k in m) {
+            yAxisdata.push(m[k]);
+          }
+          var name = yAxisdata.shift();
+
+          allyAxisdata.push({
+            name: name,
+            type: "bar",
+            label: { normal: { show: true, position: "top" } },
+            data: yAxisdata
+          });
+          allyAxisdata[0].type = "line";
+          allyAxisdata[0].label = "";
+        }
+        //echarts更新
+        var myChart = echarts.init(document.getElementById("hotStateThirty"));
+        myChart.setOption({
+          legend: {
+            data: legenddata
+          },
+          xAxis: [
+            {
+              data: xAxisdata
+            }
+          ],
+          series: allyAxisdata
+        });
+      });
+    },
+
+    //驻足60秒 日统计
+    getSixtyData() {
+      var data = {
+        from_time: this.$dtime(this.$route.query.from_time).format(
+          "YYYY-MM-DD"
+        ),
+        to_time: this.$dtime(this.$route.query.to_time).format("YYYY-MM-DD"),
+        staySecond: "60"
+      };
+      this.$global.httpGet("", "/show/hkrq/byday", data).then(res => {
+        /*******/
+        this.hotDataStaySixty = analyseTable.analyseQUYUData(res.data);
+        var legenddata = [],
+          xAxisdata = [],
+          allyAxisdata = [];
+        for (var n in analyseTable.analyseQUYUData(res.data)[0]) {
+          xAxisdata.push(n);
+        }
+        xAxisdata.shift();
+
+        for (var m of analyseTable.analyseQUYUData(res.data)) {
+          legenddata.push(m["日期"]);
+          var yAxisdata = [];
+          for (var k in m) {
+            yAxisdata.push(m[k]);
+          }
+          var name = yAxisdata.shift();
+
+          allyAxisdata.push({
+            name: name,
+            type: "bar",
+            label: { normal: { show: true, position: "top" } },
+            data: yAxisdata
+          });
+          allyAxisdata[0].type = "line";
+          allyAxisdata[0].label = "";
+        }
+        //echarts更新
+        var myChart = echarts.init(document.getElementById("hotStateSixty"));
+        myChart.setOption({
+          legend: {
+            data: legenddata
+          },
+          xAxis: [
+            {
+              data: xAxisdata
+            }
+          ],
+          series: allyAxisdata
+        });
+      });
+    },
+
+    /***************热区驻留人数时间段统计**********************/
+    getAvgTenData() {
+      //驻足10秒 分时段统计
+      var data = {
+        from_time: this.$route.query.from_time,
+        to_time: this.$route.query.to_time,
+        staySecond: "10"
+      };
+      //获取表格数据
+      this.$global.httpGet("", "/show/hkrq/byhour", data).then(res => {
+        var timeData = {};
+        for (var i = 0; i < res.data.length; i++) {
+          if (!timeData[res.data[i].time]) {
+            var arr = [];
+            arr.push(res.data[i]);
+            timeData[res.data[i].time] = arr;
+          } else {
+            timeData[res.data[i].time].push(res.data[i]);
+          }
+        }
+
+        var finnalavgData = [];
+        for (var j in timeData) {
+          var avgTenTemp = { 时间: j };
+          for (var m of timeData[j]) {
+            avgTenTemp[m.areaName] = m.stayPeopleCount;
+          }
+          finnalavgData.push(avgTenTemp);
+        }
+
+        /*****/
+
+        var showData = [],
+          legendData = [],
+          xAxisData = [];
+        for (var i in finnalavgData[0]) {
+          legendData.push(i);
+        }
+        legendData.shift(); //
+        //x轴时间轴
+        finnalavgData.forEach(item => {
+          if (
+            item["时间"] >=
+              this.$dtime(this.$route.query.from_time).format("HH:mm") &&
+            item["时间"] <=
+              this.$dtime(this.$route.query.to_time).format("HH:mm")
+          ) {
+            xAxisData.push(item["时间"]);
+            showData.push(item);
+          }
+        });
+        this.hotDataAvgStayFifteen = showData;
+        //获取echarts数据
+        this.$global.httpGet("", "/show/hkrq/byecharts", data).then(res => {
+          var temp = [],
+            showEchartsData = [];
+          for (var k in res.data) {
+            if (res.data[k].length) {
+              temp.push(k);
+            }
+            var echartsTemp = [];
+            for (var m of res.data[k]) {
+              for (var n in m) {
+                echartsTemp.push({
+                  name: n,
+                  data: m[n],
+                  type: "line",
+                  smooth: true,
+                  label: { normal: { show: true, position: "top" } }
+                });
+              }
+            }
+            showEchartsData.push(echartsTemp);
+          }
+          this.hotDataAvgStayFifteentemp = temp; 
+          intAllEcharts.inthotAvgStateten(this, this.hotDataAvgStayFifteentemp);
+          this.$nextTick(() => {
+            for (let i = 1; i <= this.hotDataAvgStayFifteentemp.length; i++) {
+              var myChart = echarts.init(
+                document.getElementById("hotAvgStateFifteen" + i)
+              );
+              myChart.setOption({
+                legend: {
+                  data: legendData
+                },
+                xAxis: {
+                  data: xAxisData
+                },
+                series: showEchartsData[i - 1]
+              });
+            }
+          });
+        });
+      });
+    },
+
+    //30秒
+    getAvgThirdData() {
+      var data = {
+        from_time: this.$route.query.from_time,
+        to_time: this.$route.query.to_time,
+        staySecond: "30"
+      };
+      //获取表格数据
+      this.$global.httpGet("", "/show/hkrq/byhour", data).then(res => {
+        var timeData = {};
+        for (var i = 0; i < res.data.length; i++) {
+          if (!timeData[res.data[i].time]) {
+            var arr = [];
+            arr.push(res.data[i]);
+            timeData[res.data[i].time] = arr;
+          } else {
+            timeData[res.data[i].time].push(res.data[i]);
+          }
+        }
+        var finnalavgData = [];
+        for (var j in timeData) {
+          var avgTenTemp = { 时间: j };
+          for (var m of timeData[j]) {
+            avgTenTemp[m.areaName] = m.stayPeopleCount;
+          }
+          finnalavgData.push(avgTenTemp);
+        }
+        /*********/
+
+        var showData = [],
+          legendData = [],
+          xAxisData = [];
+        for (var i in finnalavgData[0]) {
+          legendData.push(i);
+        }
+        legendData.shift(); //
+        //x轴时间轴
+        finnalavgData.forEach(item => {
+          if (
+            item["时间"] >=
+              this.$dtime(this.$route.query.from_time).format("HH:mm") &&
+            item["时间"] <=
+              this.$dtime(this.$route.query.to_time).format("HH:mm")
+          ) {
+            xAxisData.push(item["时间"]);
+            showData.push(item);
+          }
+        });
+        this.hotDataAvgStayThirty = showData;
+
+        //获取echarts数据
+        this.$global.httpGet("", "/show/hkrq/byecharts", data).then(res => {
+          var temp = [],
+            showEchartsData = [];
+          for (var k in res.data) {
+            if (res.data[k].length) {
+              temp.push(k);
+            }
+            var echartsTemp = [];
+            for (var m of res.data[k]) {
+              for (var n in m) {
+                echartsTemp.push({
+                  name: n,
+                  data: m[n],
+                  type: "line",
+                  smooth: true,
+                  label: { normal: { show: true, position: "top" } }
+                });
+              }
+            }
+            showEchartsData.push(echartsTemp);
+          }
+          this.hotDataAvgStayThirtytemp = temp;
+
+          intAllEcharts.inthotAvgStateThirty(this,this.hotDataAvgStayThirtytemp); //热度分时段30秒初始化
+          this.$nextTick(() => {
+            for (let i = 1; i <= this.hotDataAvgStayThirtytemp.length; i++) {
+              var myChart = echarts.init(
+                document.getElementById("hotAvgStateThirty" + i)
+              );
+              myChart.setOption({
+                legend: {
+                  data: legendData
+                },
+                xAxis: {
+                  data: xAxisData
+                },
+                series: showEchartsData[i - 1]
+              });
+            }
+          });
+        });
+      });
+    },
+    //60秒
+    getAvgSixtyData() {
+      var data = {
+        from_time: this.$route.query.from_time,
+        to_time: this.$route.query.to_time,
+        staySecond: "60"
+      };
+      //获取表格数据
+      this.$global.httpGet("", "/show/hkrq/byhour", data).then(res => {
+        var timeData = {};
+        for (var i = 0; i < res.data.length; i++) {
+          if (!timeData[res.data[i].time]) {
+            var arr = [];
+            arr.push(res.data[i]);
+            timeData[res.data[i].time] = arr;
+          } else {
+            timeData[res.data[i].time].push(res.data[i]);
+          }
+        }
+        var finnalavgData = [];
+        for (var j in timeData) {
+          var avgTenTemp = { 时间: j };
+          for (var m of timeData[j]) {
+            avgTenTemp[m.areaName] = m.stayPeopleCount;
+          }
+          finnalavgData.push(avgTenTemp);
+        }
+        /*********/
+
+        var showData = [],
+          legendData = [],
+          xAxisData = [];
+        for (var i in finnalavgData[0]) {
+          legendData.push(i);
+        }
+        legendData.shift(); //
+        //x轴时间轴
+        finnalavgData.forEach(item => {
+          if (
+            item["时间"] >=
+              this.$dtime(this.$route.query.from_time).format("HH:mm") &&
+            item["时间"] <=
+              this.$dtime(this.$route.query.to_time).format("HH:mm")
+          ) {
+            xAxisData.push(item["时间"]);
+            showData.push(item);
+          }
+        });
+        this.hotDataAvgStaySixty = showData;
+
+        //获取echarts数据
+        this.$global.httpGet("", "/show/hkrq/byecharts", data).then(res => {
+          var temp = [],
+            showEchartsData = [];
+          for (var k in res.data) {
+            if (res.data[k].length) {
+              temp.push(k);
+            }
+            var echartsTemp = [];
+            for (var m of res.data[k]) {
+              for (var n in m) {
+                echartsTemp.push({
+                  name: n,
+                  data: m[n],
+                  type: "line",
+                  smooth: true,
+                  label: { normal: { show: true, position: "top" } }
+                });
+              }
+            }
+            showEchartsData.push(echartsTemp);
+          }
+          this.hotDataAvgStaySixtytemp = temp;
+
+          intAllEcharts.inthotAvgStateSixty(this, this.hotDataAvgStaySixtytemp); //热度分时段60秒初始化
+          this.$nextTick(() => {
+            for (let i = 1; i <= this.hotDataAvgStaySixtytemp.length; i++) {
+              var myChart = echarts.init(
+                document.getElementById("hotAvgStateSixty" + i)
+              );
+              myChart.setOption({
+                legend: {
+                  data: legendData
+                },
+                xAxis: {
+                  data: xAxisData
+                },
+                series: showEchartsData[i - 1]
+              });
+            }
+          });
+        });
+      });
+    },
+
+    /******************消费者画像**********************/
+
+    getPeopleAnalyseData() {
+      var data = {
+        from_time: this.$dtime(this.$route.query.from_time).format(
+          "YYYY-MM-DD"
+        ),
+        to_time: this.$dtime(this.$route.query.to_time).format("YYYY-MM-DD"),
+        type: 0
+      };
+      this.$global.httpGet("", "/show/dxmrl/bypeople", data).then(res => {
+        var AllNum = Number(res.data.maleNum) + Number(res.data.femaleNum);
+        var sexData = {};
+        for (var m in res.data) {
+          if (this.sexField[m]) {
+            sexData[this.sexField[m]] = res.data[m];
+          }
+        }
+        var seriesSex = [];
+        for (var k in sexData) {
+          seriesSex.push({ name: k, value: sexData[k] });
+        }
+        //更新性别分析echarts
+        var myChartSex = echarts.init(document.getElementById("sexAnalyse"));
+        myChartSex.setOption({
+          series: [
+            {
+              data: seriesSex
+            }
+          ]
+        });
+        var ageData = {};
+        for (var n in res.data) {
+          if (this.ageField[n]) {
+            ageData[this.ageField[n]] = res.data[n];
+          }
+        }
+        var seriesAge = [];
+        for (var l in ageData) {
+          seriesAge.push({ name: l, value: ageData[l] });
+        }
+        //更新年龄分析echarts
+        var myChartAge = echarts.init(document.getElementById("ageAnalyse"));
+        myChartAge.setOption({
+          series: [
+            {
+              data: seriesAge
+            }
+          ]
+        });
+      });
+    },
+
+    /**************封装的一些方法模块*********************/
+
+    //方法 把大数组分成n个等数组
+    chunk(arr, size) {
+      var arr2 = [];
+      for (var i = 0; i < arr.length; i = i + size) {
+        arr2.push(arr.slice(i, i + size));
+      }
+      return arr2;
+    },
+    avg(array) {
+      //封装求平均值函数
+      var len = array.length;
+      var sum = 0;
+      for (var i = 0; i < len; i++) {
+        sum += Number(array[i]);
+      }
+      return sum / len;
+    }
+  }
+};
+</script>
+
+<style  scoped>
+.cameraPage {
+  width: 84%;
+  margin: auto;
+  /* background: #F2F6FA; */
+}
+.backwhite {
+  background: #fff;
+}
+
+.alltitle {
+  padding-top: 15px;
+  display: flex;
+  justify-content: center;
+}
+.alltitle_left {
+  width: 50%;
+  display: inline-block;
+}
+.left_title {
+  display: flex;
+  justify-content: space-around;
+}
+.title_all {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #91c7ae;
+  width: 150px;
+  height: 100px;
+  justify-content: center;
+}
+.title_all span {
+  padding-bottom: 5px;
+}
+.big_title {
+  font-size: 30px;
+  font-weight: 500;
+  text-align: center;
+}
+.small_title {
+  padding-left: 30px;
+}
+.third_title {
+  padding-left: 35px;
+}
+.titleHead_distance {
+  text-align: center;
+  height: 20px;
+  font-size: 20px;
+}
+.titleHead_distance span {
+  font-size: 25px;
+}
+.titleBig_distance {
+  height: 35px;
+}
+.titleSmall_distance {
+  height: 20px;
+}
+.title {
+  font-size: 35px;
+  text-align: center;
+  height: 30px;
+}
+.stateSpicy_title {
+  font-size: 22px;
+  padding: 25px;
+}
+.timeInterval_title,
+.daytotal_title,
+.stateArg_title {
+  font-size: 25px;
+  padding: 15px;
+}
+</style>
