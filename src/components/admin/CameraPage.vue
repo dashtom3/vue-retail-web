@@ -226,11 +226,7 @@ export default {
     };
   },
   mounted() {
-    console.log(
-      this.$route.query.id,
-      this.$route.query.from_time,
-      this.$route.query.to_time
-    );
+    console.log(this.$route.query.id,this.$route.query.from_time,this.$route.query.to_time);
     this.searchTime = {
       from_date: this.$dtime(this.$route.query.from_time)
         .format("YYYY-MM-DD")
@@ -386,28 +382,10 @@ export default {
       var YDate = [],
         title = [],
         Xdata = [];
-      var chartDate = [];
       if (this.totalPData.length > 0) {
-        var temp =  this.$dtime(this.totalPData[0].start_time).format("YYYY-MM-DD") + "(" + this.$dtime(this.totalPData[0].start_time).format("dddd") + ")";
-        chartDate.push({ name: temp });
-        this.totalPData.forEach((res, index) => {
-          var tempHour = this.$dtime(res.start_time).format("HH:mm");
-          var tempHour2 = parseInt(this.$dtime(res.start_time).format("HH"));
-          if (tempHour2 >= this.startHour && tempHour2 <= this.endHour) {
-            var tempDate =
-              this.$dtime(res.start_time).format("YYYY-MM-DD") + "(" + this.$dtime(res.start_time).format("dddd") + ")";
-            if (temp == tempDate) {
-              chartDate[chartDate.length - 1][tempHour] = res.enter;
-            } else {
-              temp = tempDate;
-              var tempRes = { name: tempDate };
-              var tempRes1 = { name: tempDate };
-              tempRes[tempHour] = res.enter;
-              tempRes1[tempHour] = res.exit;
-              chartDate.push(tempRes);
-            }
-          }
-        });
+        
+      var chartDate = intAllEcharts.analysePDDayPart(this.totalPData,this.startHour,this.endHour)
+
         for (let i = this.startHour; i <= this.endHour; i++) {
              Xdata.push(i + ":00");
           }

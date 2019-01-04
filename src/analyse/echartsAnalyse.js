@@ -1,4 +1,5 @@
 import echarts from 'echarts'
+import dtime from 'time-formater'
 const echartsAnalyse = {
     //客流总量仪表盘初始化
     intFlowTotal() {
@@ -330,6 +331,32 @@ const echartsAnalyse = {
           myChart.resize(); //若有多个图表变动，可多写
         };
       },
+     analysePDDayPart(totalPData,startHour,endHour){
+       var chartDate = []
+      if (totalPData.length > 0) {
+        var temp =  dtime(totalPData[0].start_time).format("YYYY-MM-DD") + "(" + dtime(totalPData[0].start_time).format("dddd") + ")";
+        chartDate.push({ name: temp });
+        totalPData.forEach((res, index) => {
+          var tempHour = dtime(res.start_time).format("HH:mm");
+          var tempHour2 = parseInt(dtime(res.start_time).format("HH"));
+          if (tempHour2 >= startHour && tempHour2 <= endHour) {
+            var tempDate = dtime(res.start_time).format("YYYY-MM-DD") + "(" + dtime(res.start_time).format("dddd") + ")";
+            if (temp == tempDate) {
+              chartDate[chartDate.length - 1][tempHour] = res.enter;
+            } else {
+              temp = tempDate;
+              var tempRes = { name: tempDate };
+              var tempRes1 = { name: tempDate };
+              tempRes[tempHour] = res.enter;
+              tempRes1[tempHour] = res.exit;
+              chartDate.push(tempRes);
+            }   
+          }
+        });
+        
+      }
+      return chartDate
+     },
        //区域关注度逗留时间10秒
     intStateFifteen() {
         var myChart = echarts.init(document.getElementById("hotStateFifteen"));
