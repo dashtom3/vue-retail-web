@@ -1,8 +1,9 @@
 <template>
+<div class="allcameraPage">
   <div class="cameraPage">
-    <div class="backwhite">
-      <p class="title">门店数据报告</p>
-      <p class="titleBig_distance"></p>
+    <div>
+      <p class="title">顾客综合数据智能图谱</p>
+      <!-- <p class="titleBig_distance"></p> -->
       <p class="big_title">数据总览</p>
       <p class="titleHead_distance">{{searchTime.from_date}}-{{searchTime.to_date}} &nbsp ({{searchTime.from_time}}~{{searchTime.to_time}}) </p>
       <p class="titleHead_distance">客流总量:
@@ -49,116 +50,157 @@
     </div>
     <p class="titleBig_distance"></p>
     <p class="big_title">监测分析</p>
-    <div class="backwhite">
+    <div>
       <p class="titleBig_distance"></p>
       <p class="daytotal_title">客流情况</p>
       <p class="small_title">日客流量变化</p>
       <div id="day_camera" style="width: 100%;height:600px;"></div>
       <p class="small_title">日客流量变化详情</p>
-      <el-table :data="dayTotalData" border style="min-width: 800px">
+      <el-table :data="dayTotalData" border style="min-width:1280px">
         <el-table-column v-for="(value,key,index) in dayTotalData[0]" :prop="key" :label="key" align="center">
         </el-table-column>
       </el-table>
     </div>
 
-    <div class="backwhite">
+    <div>
       <p class="titleBig_distance"></p>
       <p class="small_title">日逗留时长变化</p>
       <div id="stateArg" style="width: 100%;height:600px;"></div>
       <p class="small_title">日逗留时长变化详情</p>
-      <el-table :data="averageStateTime" border style="min-width: 800px">
+      <el-table :data="averageStateTime" border style="min-width:1280px">
         <el-table-column v-for="(value,key,index) in averageStateTime[0]" :prop="key" :label="key" align="center">
         </el-table-column>
       </el-table>
     </div>
 
-    <div class="backwhite">
-      <p class="small_title">分时段客流量变化</p>
-      <div id="main_camera" style="width: 100%;height:500px;"></div>
-      <p class="small_title">分时段客流量变化详情</p>
-      <el-table :data="totalPTableData" border style="min-width: 800px">
-        <el-table-column v-for="(value,key,index) in totalPTableData[0]" :prop="key" :label="key" align="center">
-        </el-table-column>
-      </el-table>
+    <div class="pro_part" v-for="n in timePart.length">
+      <div class="part_echarts">
+        <p class="small_title">分时段客流量变化</p>
+        <div :id="'main_camera'+ n" style="width: 100%;height:700px;"></div>
+      </div>
+      <div class="part_table">
+        <p class="small_title">分时段客流量变化详情</p>
+        <el-table :data="totalPTableData[n-1]" border>
+          <el-table-column v-for="(value,key,index) in totalPTableData[n-1][0]" :prop="key" :label="key" align="center">
+          </el-table-column>
+        </el-table>
+      </div>
     </div>
 
-    <div class="backwhite">
-      <p class="titleBig_distance"></p>
-      <p class="small_title">分时段客人逗留分布趋势</p>
-      <div :id="'timeSpicy'+n" v-for='n in timeSpicyTemp.length' :style="{'width': 100/timeSpicyTemp.length +'%','height':'650px','display':timeSpicyTemp.length>1?'inline-block':'block'}"></div>
-      <p class="small_title">分时段客人逗留分布趋势详情</p>
-      <el-table :data="timeTotalDate" border style="min-width: 800px">
-        <el-table-column v-for="(value,key,index) in timeTotalDate[0]" :prop="key" :label="key" align="center">
-        </el-table-column>
-      </el-table>
+    <div class="pro_part" v-for="n in timeSpicyTemp.length">
+      <!-- <p class="titleBig_distance"></p> -->
+      <div class="part_echarts">
+        <p class="small_title">分时段客人逗留分布趋势</p>
+        <div :id="'timeSpicy'+n" style="width: 100%;height:700px;"></div>
+      </div>
+      <div class="part_table">
+        <p class="small_title">分时段客人逗留分布趋势详情</p>
+        <el-table :data="timeTotalDate[n-1]" border>
+          <el-table-column v-for="(value,key,index) in timeTotalDate[n-1][0]" :prop="key" :label="key" align="center">
+          </el-table-column>
+        </el-table>
+      </div>
     </div>
 
-    <div>
-      <p class="titleBig_distance"></p>
-      <p class="daytotal_title">关注情况</p>
-      <p class="stateSpicy_title">日关注度分布</p>
+    <p class="daytotal_title">关注情况</p>
+    <p class="stateSpicy_title">日关注度分布</p>
+    <div class="pro_part" v-for="n in stayTenTemp.length">
+      <div class="part_echarts">
       <p class="third_title">停留10秒以上客流分布对比</p>
-      <div id="hotStateFifteen" style="width: 100%;height:500px;"></div>
+      <div :id="'hotStateFifteen'+n" style="width: 100%;height:400px;"></div>
+      </div>
+      <div class="part_table">
       <p class="third_title">停留10秒以上客流分布对比详情</p>
-      <el-table :data="hotDataStayten" border style="min-width: 800px">
-        <el-table-column v-for="(value,key,index) in hotDataStayten[0]" :prop="key" :label="key" align="center">
+      <el-table :data="hotDataStayten[n-1]" border>
+        <el-table-column v-for="(value,key,index) in hotDataStayten[n-1][0]" :prop="key" :label="key" align="center">
         </el-table-column>
       </el-table>
+      </div>
     </div>
 
-    <div>
-      <p class="titleBig_distance"></p>
+    <div class="pro_part" v-for="n in stayThirtyTemp.length">
+      <!-- <p class="titleBig_distance"></p> -->
+      <div class="part_echarts">
       <p class="third_title">停留30秒以上客流分布对比</p>
-      <div id="hotStateThirty" style="width: 100%;height:500px;"></div>
+      <div :id="'hotStateThirty'+n" style="width: 100%;height:400px;"></div>
+      </div>
+      <div class="part_table">
       <p class="third_title">停留30秒以上客流分布对比详情</p>
-      <el-table :data="hotDataStayThirty" border style="min-width: 800px">
-        <el-table-column v-for="(value,key,index) in hotDataStayThirty[0]" :prop="key" :label="key" align="center">
+      <el-table :data="hotDataStayThirty[n-1]" border>
+        <el-table-column v-for="(value,key,index) in hotDataStayThirty[n-1][0]" :prop="key" :label="key" align="center">
         </el-table-column>
       </el-table>
+      </div>
     </div>
 
-    <div>
-      <p class="titleBig_distance"></p>
+    <div class="pro_part" v-for="n in staySixtyTemp.length">
+      <div class="part_echarts">
+      <!-- <p class="titleBig_distance"></p> -->
       <p class="third_title">停留60秒以上客流分布对比</p>
-      <div id="hotStateSixty" style="width: 100%;height:500px;"></div>
+      <div :id="'hotStateSixty'+n" style="width: 100%;height:400px;"></div>
+      </div>
+      <div class="part_table">
       <p class="third_title">停留60秒以上客流分布对比详情</p>
-      <el-table :data="hotDataStaySixty" border style="min-width: 800px">
-        <el-table-column v-for="(value,key,index) in hotDataStaySixty[0]" :prop="key" :label="key" align="center">
+      <el-table :data="hotDataStaySixty[n-1]" border>
+        <el-table-column v-for="(value,key,index) in hotDataStaySixty[n-1][0]" :prop="key" :label="key" align="center">
         </el-table-column>
       </el-table>
+      </div>
     </div>
 
-    <div>
-      <p class="titleBig_distance"></p>
-      <p class="stateSpicy_title">工作日节假日关注度对比</p>
-      <div :id="'hotAvgStateFifteen'+n" v-for=" n in hotDataAvgStayFifteentemp.length" :style="{'width': 100/hotDataAvgStayFifteentemp.length +'%','height':'500px','display':hotDataAvgStayFifteentemp.length>1?'inline-block':'block'}"></div>
-      <p class="third_title">各时段关注度详情(10秒以上)</p>
-      <el-table :data="hotDataAvgStayFifteen" border style="min-width: 800px">
-        <el-table-column v-for="(value,key,index) in hotDataAvgStayFifteen[0]" :prop="key" :label="key" align="center">
+    <p class="titleBig_distance"></p>
+    <p class="stateSpicy_title">工作日节假日关注度对比</p>
+    <div class="pro_part" v-for=" n in hotDataAvgStayFifteentemp.length">
+      <div class="part_echarts">
+        <p class="third_title" v-if="n==1">工作日各时段关注度对比（10秒以上）</p>
+        <p class="third_title" v-if="n==2">节假日各时段关注度对比（10秒以上）</p>
+      <div :id="'hotAvgStateFifteen'+n"  style="width: 100%;height:600px;"></div>
+      </div>
+      <div class="part_table">
+      <p class="third_title" v-if="n==1">工作日各时段关注度对比详情（10秒以上）</p>
+      <p class="third_title" v-if="n==2">节假日各时段关注度对比详情（10秒以上）</p>
+      <el-table :data="hotDataAvgStayFifteen[n-1]" border style="min-width:650px">
+        <el-table-column v-for="(value,key,index) in hotDataAvgStayFifteen[n-1][0]" :prop="key" :label="key" align="center">
         </el-table-column>
       </el-table>
+      </div>
     </div>
 
-    <div>
-      <p class="titleBig_distance"></p>
-      <div :id="'hotAvgStateThirty'+n" v-for=" n in hotDataAvgStayThirtytemp.length" :style="{'width': 100/hotDataAvgStayThirtytemp.length +'%','height':'500px','display':hotDataAvgStayThirtytemp.length>1?'inline-block':'block'}"></div>
-      <p class="third_title">各时段关注度详情(30秒以上)</p>
-      <el-table :data="hotDataAvgStayThirty" border style="min-width: 800px">
-        <el-table-column v-for="(value,key,index) in hotDataAvgStayThirty[0]" :prop="key" :label="key" align="center">
-        </el-table-column>
-      </el-table>
+    <p class="titleBig_distance"></p>
+    <div class="pro_part" v-for=" n in hotDataAvgStayThirtytemp.length">
+      <div class="part_echarts">
+      <p class="third_title" v-if="n==1">工作日各时段关注度对比（30秒以上）</p>
+      <p class="third_title" v-if="n==2">节假日各时段关注度对比（30秒以上）</p>
+      <div :id="'hotAvgStateThirty'+n"  style="width: 100%;height:600px;"></div>
+      </div>
+      <div class="part_table">
+        <p class="third_title" v-if="n==1">工作日各时段关注度对比详情（30秒以上）</p>
+        <p class="third_title" v-if="n==2">节假日各时段关注度对比详情（30秒以上）</p>
+        <el-table :data="hotDataAvgStayThirty[n-1]" border style="min-width:650px">
+          <el-table-column v-for="(value,key,index) in hotDataAvgStayThirty[n-1][0]" :prop="key" :label="key" align="center">
+          </el-table-column>
+        </el-table>
+      </div>
     </div>
 
-    <div>
-      <p class="titleBig_distance"></p>
-      <div :id="'hotAvgStateSixty'+n" v-for=" n in hotDataAvgStaySixtytemp.length" :style="{'width': 100/hotDataAvgStaySixtytemp.length +'%','height':'500px','display':hotDataAvgStaySixtytemp.length>1?'inline-block':'block'}"></div>
-      <p class="third_title">各时段关注度详情(60秒以上)</p>
-      <el-table :data="hotDataAvgStaySixty" border style="min-width: 800px">
-        <el-table-column v-for="(value,key,index) in hotDataAvgStaySixty[0]" :prop="key" :label="key" align="center">
+    <p class="titleBig_distance"></p>
+    <div class="pro_part" v-for=" n in hotDataAvgStaySixtytemp.length">
+      <div class="part_echarts">
+      <p class="third_title" v-if="n==1">工作日各时段关注度对比（60秒以上）</p>
+      <p class="third_title" v-if="n==2">节假日各时段关注度对比（60秒以上）</p>
+      <div :id="'hotAvgStateSixty'+n"  style="width: 100%;height:600px;"></div>
+      </div>
+      <div class="part_table"> 
+      <p class="third_title" v-if="n==1">工作日各时段关注度对比详情（60秒以上）</p>
+      <p class="third_title" v-if="n==2">节假日各时段关注度对比详情（60秒以上）</p>
+      <el-table :data="hotDataAvgStaySixty[n-1]" border style="min-width:650px">
+        <el-table-column v-for="(value,key,index) in hotDataAvgStaySixty[n-1][0]" :prop="key" :label="key" align="center">
         </el-table-column>
       </el-table>
+      </div>
     </div>
   </div>
+</div>
 </template>
 
 <script>
@@ -177,34 +219,7 @@ export default {
       },
       startHour: "", //从url中获取的开始时间
       endHour: "", //从url中获取的结束时间
-
-      allFlowPeople: [],
-      totalPTableData: [], //分时段表格处理数据
-      totalPData: [], //接口原始数据
-      dayTotalPData: [], //按天接口原数据
-      dayTotalData: [], //按日表格处理数据
-
-      timeTotalDate: [], //分时段比重表格数据
-      daytotalEnter: {}, //当天总人数
-
-      hotDataAll: [], //热度分析总览
-      hotDataStayten: [], //驻足时间日统计10秒,
-      hotDataStayThirty: [], //驻足时间日统计30秒
-      hotDataStaySixty: [], //驻足时间日统计60秒
-
-      hotDataAvgStayFifteentemp: [], //15秒echarts工作日和节假日分组
-      hotDataAvgStayThirtytemp: [], //30秒echarts工作日和节假日分组
-      hotDataAvgStaySixtytemp: [], //60秒echats工作日和节假日分组
-      //平均分时段逗留人数15秒
-      hotDataAvgStayFifteen: [],
-      //平均分时段逗留人数30秒
-      hotDataAvgStayThirty: [],
-      //平均分时段逗留人数60秒
-      hotDataAvgStaySixty: [],
-
-      averageStateTime: [], //客均逗留时长表格数据
-
-      timeSpicyTemp: [], //逗留柱状图分组数据
+      /*******数据总览显示数据******/
       analyse_titleDate: {
         allPeople: null,
         minAvg: null,
@@ -212,6 +227,37 @@ export default {
         minStateAvg: null,
         maxStateAvg: null
       },
+     /*************海康客流**************/
+      totalPData: [], //按小时接口原始数据(海康客流)
+      dayTotalPData: [], //按天接口原数据(海康客流)
+      dayTotalData: [], //按日表格显示数据(海康客流)
+      averageStateTime: [], //客均逗留时长表格数据(海康客流)
+      totalPTableData: [], //分时段表格显示数据(海康客流)
+      timeTotalDate: [], //分时段逗留比重表格显示数据(海康客流)
+      daytotalEnter: {}, //当天总人数(海康客流)
+      daytotalEnterTable:{},//当天总人数(表格用)
+
+      /**************海康热区*************/ 
+      hotDataStayten: [], //驻足时间日统计10秒表格显示数据
+      hotDataStayThirty: [], //驻足时间日统计30秒表格显示数据
+      hotDataStaySixty: [], //驻足时间日统计60秒表格显示数据
+      hotDataAvgStayFifteen: [],//平均分时段逗留人数10秒表格显示数据
+      hotDataAvgStayThirty: [],//平均分时段逗留人数30秒表格显示数据
+      hotDataAvgStaySixty: [], //平均分时段逗留人数60秒表格显示数据
+
+      hotDataAvgStayFifteentemp: [], //10秒echarts工作日和节假日分组
+      hotDataAvgStayThirtytemp: [], //30秒echarts工作日和节假日分组
+      hotDataAvgStaySixtytemp: [], //60秒echats工作日和节假日分组
+      
+      /************/ 
+      timePart: [],//分时段客流量分组数据
+      timeSpicyTemp: [], //分时段客人逗留分布趋势分组数据
+      stayTenTemp:[], //停留10秒以上客流分布分组数据
+      stayThirtyTemp:[],//停留30秒以上客流分布分组数据
+      staySixtyTemp:[],////停留60秒以上客流分布分组数据
+
+      
+      /*******店小喵人脸识别字段解释**********/ 
       sexField: {
         femaleNum: "女性",
         maleNum: "男性"
@@ -226,7 +272,7 @@ export default {
     };
   },
   mounted() {
-    console.log(this.$route.query.id,this.$route.query.from_time,this.$route.query.to_time);
+    console.log(this.$route.query.id,this.$route.query.from_time, this.$route.query.to_time);
     this.searchTime = {
       from_date: this.$dtime(this.$route.query.from_time)
         .format("YYYY-MM-DD")
@@ -237,12 +283,8 @@ export default {
       from_time: this.$dtime(this.$route.query.from_time).format("HH:mm"),
       to_time: this.$dtime(this.$route.query.to_time).format("HH:mm")
     };
-    this.startHour = parseInt(
-      this.$dtime(this.$route.query.from_time).format("HH")
-    );
-    this.endHour = parseInt(
-      this.$dtime(this.$route.query.to_time).format("HH")
-    );
+    this.startHour = parseInt(this.$dtime(this.$route.query.from_time).format("HH"));
+    this.endHour = parseInt(this.$dtime(this.$route.query.to_time).format("HH"));
     this.getCameraData(); //获取进店客流接口数据
     /*echats图表初始化*/
     this.intEacharts(); //echarts初始化
@@ -262,17 +304,13 @@ export default {
       intAllEcharts.intFlowTotal(); //客流总量仪表盘初始化
       intAllEcharts.intTotalStateArg(); //客均逗留时长表盘初始化
       intAllEcharts.intHoChart(); //热度图总览
-        //消费者画像echarts初始化(年龄分析和男女分析)
+      //消费者画像echarts初始化(年龄分析和男女分析)
       intAllEcharts.intAgeEcharts();
       intAllEcharts.intSexEcharts();
 
       intAllEcharts.intDayChart(); //日统计初始化echarts
-      intAllEcharts.intDayParting(); //分时段初始化echarts
       intAllEcharts.intStateArg(); //日均逗留时长echarts初始化
 
-      intAllEcharts.intStateFifteen(); //热度停留15秒初始化
-      intAllEcharts.intStateThirty(); //热度30秒初始化
-      intAllEcharts.intStateSixty(); //热度60秒初始化
     },
     /*************获取接口模块***************/
     //获取进店客流接口数据
@@ -292,7 +330,7 @@ export default {
 
         this.$global.httpGet("", "/show/hkrl/byday", data).then(res => {
           this.dayTotalPData = res.data.data;
-          this.analyseDay();//调用日数据表格方法
+          this.analyseDay(); //调用日数据表格方法
         });
       });
     },
@@ -302,13 +340,22 @@ export default {
     /********************每日进店客流模块 *****************************/
     //日数据表格处理
     analyseDay() {
-      var dayX = [],dayY = [],temdata = [];
+      var dayX = [],
+          dayY = [],
+          temdata = [];
       var resData = analyseTable.analyseDay(this.dayTotalPData);
-      this.daytotalEnter = resData.daytotalEnter;
+      this.daytotalEnterTable = resData.daytotalEnter
+      var timePartTemp = {}
+     for(var key in resData.daytotalEnter){
+        var date = this.$dtime(key).format('MM-DD') +'('+ this.$dtime(key).format('ddd') +')'
+        timePartTemp[date] = resData.daytotalEnter[key]
+     }
+     this.daytotalEnter = timePartTemp;
       this.dayTotalData = resData.dayTotalData;
 
       for (let k in resData.daytotalEnter) {
-        dayX.push(k);
+        var date = this.$dtime(k).format('MM-DD')+'('+this.$dtime(k).format('ddd')+')'
+        dayX.push(date);
         temdata.push(resData.daytotalEnter[k]);
       }
 
@@ -325,7 +372,7 @@ export default {
         {
           name: "日客流",
           type: "bar",
-          barWidth: 60,
+          barWidth: 20,
           label: { normal: { show: true, position: "top" } },
           data: temdata
         },
@@ -341,19 +388,23 @@ export default {
     /****************每日客均逗留时长模块*********************/
     getStateArgData() {
       var data = {
-        from_time: this.$dtime(this.$route.query.from_time).format("YYYY-MM-DD"),
+        from_time: this.$dtime(this.$route.query.from_time).format(
+          "YYYY-MM-DD"
+        ),
         to_time: this.$dtime(this.$route.query.to_time).format("YYYY-MM-DD"),
         from_hour: 5,
         hours: 24
       };
       this.$global.httpGet("", "/show/hkdl/byDay", data).then(res => {
-        var dataTemp = [],legenddata = [],seriesData = [];
+        var dataTemp = [],
+          legenddata = [],
+          seriesData = [];
         var dateArg = { 日期: "逗留时长" };
         for (var i of res.data) {
           var dateTime =
-            this.$dtime(i.date).format("YYYY-MM-DD") +
+            this.$dtime(i.date).format("MM-DD") +
             "(" +
-            this.$dtime(i.date).format("dddd") +
+            this.$dtime(i.date).format("ddd") +
             ")";
           legenddata.push(dateTime);
           seriesData.push(i.time);
@@ -383,12 +434,10 @@ export default {
         title = [],
         Xdata = [];
       if (this.totalPData.length > 0) {
-        
-      var chartDate = intAllEcharts.analysePDDayPart(this.totalPData,this.startHour,this.endHour)
-
+        var chartDate = intAllEcharts.analysePDDayPart(this.totalPData,this.startHour,this.endHour);
         for (let i = this.startHour; i <= this.endHour; i++) {
-             Xdata.push(i + ":00");
-          }
+          Xdata.push(i + ":00");
+        }
         chartDate.forEach(item => {
           var arr = [];
           for (let d in item) {
@@ -410,36 +459,25 @@ export default {
 
           title.push(item.name);
         });
-        intAllEcharts.setOptions(title, Xdata, YDate);
+        intAllEcharts.setOptions(this, this.timePart, title, Xdata,this.chunk(YDate, 7));
       }
     },
     //分时段表格处理数据
     analyseTotalP() {
       var totalDate = {};
       if (this.totalPData.length > 0) {
-        var temp = this.$dtime(this.totalPData[0].start_time).format("YYYY-MM-DD") + "(" + this.$dtime(this.totalPData[0].start_time).format("dddd") + ")";
         this.totalPData.forEach(res => {
-          var tempDate = this.$dtime(res.start_time).format("YYYY-MM-DD") + "(" + this.$dtime(res.start_time).format("dddd") + ")";
-          var tempHour2 = parseInt(this.$dtime(res.start_time).format("HH"));
-          if (tempHour2 >= this.startHour && tempHour2 <= this.endHour) {
-              var tempHour = this.$dtime(res.start_time).format("HH:mm");
-              if (temp == tempDate) {
-                var dateObject = { 时间: "" };
-                dateObject[tempDate] = res.enter;
-                totalDate[tempHour] = dateObject;
-              } else {
-                var tempRes = { 时间: "" };
-                tempRes[tempDate] = res.enter;
-                totalDate[tempHour][tempDate] = res.enter;
-              }
-          }
+          res.date = this.$dtime(res.start_time).format("YYYY-MM-DD");
         });
-        var totalPTableDataTemp = [];
-        for (let k in totalDate) {
-          totalDate[k]["时间"] = k;
-          totalPTableDataTemp.push(totalDate[k]);
-        }
-        this.totalPTableData = totalPTableDataTemp;
+
+        var tableGroupData = analyseTable.gettableGroup(
+          this.searchTime.from_time,
+          this.searchTime.to_time,
+          this.totalPData
+        );
+        this.totalPTableData = tableGroupData;
+        this.timePart = tableGroupData;
+        intAllEcharts.intDayParting(this, this.timePart); //分时段初始化echarts
       }
     },
     /*****************************************************/
@@ -448,56 +486,13 @@ export default {
 
     //分析时段比重表格数据处理
     analyseTime() {
-      var totalDate = {};
-      var timeSpicy = {};
       if (this.totalPData.length > 0) {
-        var temp =
-          this.$dtime(this.totalPData[0].start_time).format("YYYY-MM-DD") +
-          "(" +
-          this.$dtime(this.totalPData[0].start_time).format("dddd") +
-          ")";
-        this.totalPData.forEach(res => {
-          var tempDate =
-            this.$dtime(res.start_time).format("YYYY-MM-DD") +
-            "(" +
-            this.$dtime(res.start_time).format("dddd") +
-            ")";
-          var tempHour2 = parseInt(this.$dtime(res.start_time).format("HH"));
-          if (tempHour2 >= this.startHour && tempHour2 <= this.endHour) {
-            var tempHour = this.$dtime(res.start_time).format("HH:mm");
-            if (temp == tempDate) {
-              var dateObject = { 时间: "" };
-              if (this.daytotalEnter[tempDate] == 0) {
-                dateObject[tempDate] = 0 + "%";
-                totalDate[tempHour] = dateObject;
-              } else {
-                dateObject[tempDate] =
-                  Math.round(res.enter / this.daytotalEnter[tempDate] * 1000) /
-                    10 +
-                  "%";
-                totalDate[tempHour] = dateObject;
-              }
-            } else {
-              var tempRes = { 时间: "" };
-              tempRes[tempDate] = res.enter;
-              if (this.daytotalEnter[tempDate] == 0) {
-                totalDate[tempHour][tempDate] = 0 + "%";
-              } else {
-                totalDate[tempHour][tempDate] =
-                  Math.round(res.enter / this.daytotalEnter[tempDate] * 1000) /
-                    10 +
-                  "%";
-              }
-            }
-          }
-        });
-        var timeTotalDateTemp = [];
-        for (let k in totalDate) {
-          totalDate[k]["时间"] = k;
-          timeTotalDateTemp.push(totalDate[k]);
-        }
-        this.timeTotalDate = timeTotalDateTemp;
-        this.analyseTimeSpicy();
+        
+        var tableGroupData = analyseTable.gettableGroupTimePart(this.searchTime.from_time,this.searchTime.to_time,this.totalPData,this.daytotalEnterTable);
+        this.timeSpicyTemp = tableGroupData;
+        // console.log(tableGroupData)
+        this.timeTotalDate = tableGroupData;
+        this.analyseTimeSpicy(); //
       }
     },
     //分时段逗留比重echarts数据处理
@@ -505,9 +500,9 @@ export default {
       var echartsTimeSpicyData = [];
       if (this.totalPData.length > 0) {
         var temp =
-          this.$dtime(this.totalPData[0].start_time).format("YYYY-MM-DD") +
+          this.$dtime(this.totalPData[0].start_time).format("MM-DD") +
           "(" +
-          this.$dtime(this.totalPData[0].start_time).format("dddd") +
+          this.$dtime(this.totalPData[0].start_time).format("ddd") +
           ")";
         echartsTimeSpicyData.push({ name: temp });
         this.totalPData.forEach(res => {
@@ -515,9 +510,9 @@ export default {
           var tempHour2 = parseInt(this.$dtime(res.start_time).format("HH"));
           if (tempHour2 >= this.startHour && tempHour2 <= this.endHour) {
             var tempDate =
-              this.$dtime(res.start_time).format("YYYY-MM-DD") +
+              this.$dtime(res.start_time).format("MM-DD") +
               "(" +
-              this.$dtime(res.start_time).format("dddd") +
+              this.$dtime(res.start_time).format("ddd") +
               ")";
             if (temp == tempDate) {
               echartsTimeSpicyData[echartsTimeSpicyData.length - 1][tempHour] =
@@ -554,14 +549,12 @@ export default {
             name: item.name,
             data: arr,
             type: "bar",
-            barWidth: 8,
+            barWidth: 6,
             label: {
               normal: { show: true, position: "insideRight", formatter: "{c}%" }
             }
           });
         });
-
-        this.timeSpicyTemp = this.chunk(totaltitle, 7);
         intAllEcharts.intTimeChart(this, this.timeSpicyTemp); //分时段客流比重初始化
         this.$nextTick(() => {
           for (let i = 1; i <= this.timeSpicyTemp.length; i++) {
@@ -591,9 +584,7 @@ export default {
     //获取区域热度总览接口数据
     getHotData() {
       var data = {
-        from_time: this.$dtime(this.$route.query.from_time).format(
-          "YYYY-MM-DD"
-        ),
+        from_time: this.$dtime(this.$route.query.from_time).format("YYYY-MM-DD"),
         to_time: this.$dtime(this.$route.query.to_time).format("YYYY-MM-DD"),
         staySecond: "10,30,60"
       };
@@ -618,8 +609,6 @@ export default {
           hotDataAllTemp.push(alldata);
         }
         /***/
-
-        // this.hotDataAll = hotDataAllTemp;
         var yAxisData = [],
           allserisData = [];
 
@@ -656,55 +645,48 @@ export default {
     getTenData() {
       //驻足10秒 日统计
       var data = {
-        from_time: this.$dtime(this.$route.query.from_time).format(
-          "YYYY-MM-DD HH:mm:ss"
-        ),
-        to_time: this.$dtime(this.$route.query.to_time).format(
-          "YYYY-MM-DD HH:mm:ss"
-        ),
+        from_time: this.$dtime(this.$route.query.from_time).format("YYYY-MM-DD HH:mm:ss"),
+        to_time: this.$dtime(this.$route.query.to_time).format("YYYY-MM-DD HH:mm:ss"),
         staySecond: "10"
       };
       this.$global.httpGet("", "/show/hkrq/byday", data).then(res => {
         /****/
-        this.hotDataStayten = analyseTable.analyseQUYUData(res.data);
+        var hotDataStayten = analyseTable.analyseQUYUData(res.data);
+        this.hotDataStayten = hotDataStayten
+        this.stayTenTemp = hotDataStayten
+        intAllEcharts.intStateFifteen(this,this.stayTenTemp); //热度停留10秒初始化
+
         var legenddata = [],
-          xAxisdata = [],
+          allxAxisdata = [],
           allyAxisdata = [];
-        for (var n in analyseTable.analyseQUYUData(res.data)[0]) {
-          xAxisdata.push(n);
-        }
-        xAxisdata.shift();
-
-        for (var m of analyseTable.analyseQUYUData(res.data)) {
-          legenddata.push(m["日期"]);
-          var yAxisdata = [];
-          for (var k in m) {
-            yAxisdata.push(m[k]);
+        for (var n in this.hotDataStayten) {
+          var xAxisdata = []
+          for(var m in this.hotDataStayten[n][0]){
+            var date = this.$dtime(m).format('MM-DD')+'('+this.$dtime(m).format('ddd')+')'
+              xAxisdata.push(date);
           }
-          var name = yAxisdata.shift();
-
-          allyAxisdata.push({
-            name: name,
-            type: "bar",
-            label: { normal: { show: true, position: "top" } },
-            data: yAxisdata
-          });
-          allyAxisdata[0].type = "line";
-          allyAxisdata[0].label = "";
+          xAxisdata.shift();
+          allxAxisdata.push(xAxisdata)
+        }
+        
+        var allserisData = [],allserisName = []
+        for(var key in this.hotDataStayten){
+          var serisData = [],serisName = []
+          for (var m of  this.hotDataStayten[key]) {
+            legenddata.push(m["日期"]);
+            var yAxisdata = [];
+            for (var k in m) {
+              yAxisdata.push(m[k]);
+            }
+            var name = yAxisdata.shift();
+            serisData.push(yAxisdata)
+            serisName.push(name)
+          }
+         allserisData.push(serisData)
+         allserisName.push(serisName)
         }
         //echarts更新
-        var myChart = echarts.init(document.getElementById("hotStateFifteen"));
-        myChart.setOption({
-          legend: {
-            data: legenddata
-          },
-          xAxis: [
-            {
-              data: xAxisdata
-            }
-          ],
-          series: allyAxisdata
-        });
+        intAllEcharts.setStateTen(this,this.stayTenTemp,legenddata,allxAxisdata,allserisName,allserisData)
       });
     },
 
@@ -712,110 +694,101 @@ export default {
     getThirtyData() {
       //30秒
       var data = {
-        from_time: this.$dtime(this.$route.query.from_time).format(
-          "YYYY-MM-DD"
-        ),
+        from_time: this.$dtime(this.$route.query.from_time).format("YYYY-MM-DD"),
         to_time: this.$dtime(this.$route.query.to_time).format("YYYY-MM-DD"),
         staySecond: "30"
       };
       this.$global.httpGet("", "/show/hkrq/byday", data).then(res => {
         /******/
-        this.hotDataStayThirty = analyseTable.analyseQUYUData(res.data);
+       var hotDataStayThirty = analyseTable.analyseQUYUData(res.data);
+        this.hotDataStayThirty = hotDataStayThirty
+        this.stayThirtyTemp = hotDataStayThirty
+        intAllEcharts.intStateThirty(this,this.stayThirtyTemp); //热度30秒初始化
+
         var legenddata = [],
-          xAxisdata = [],
+          allxAxisdata = [],
           allyAxisdata = [];
-        for (var n in analyseTable.analyseQUYUData(res.data)[0]) {
-          xAxisdata.push(n);
-        }
-        xAxisdata.shift();
-
-        for (var m of analyseTable.analyseQUYUData(res.data)) {
-          legenddata.push(m["日期"]);
-          var yAxisdata = [];
-          for (var k in m) {
-            yAxisdata.push(m[k]);
+        for (var n in this.hotDataStayThirty) {
+          var xAxisdata = []
+          for(var m in this.hotDataStayThirty[n][0]){
+              var date = this.$dtime(m).format('MM-DD')+'('+this.$dtime(m).format('ddd')+')'
+              xAxisdata.push(date);
           }
-          var name = yAxisdata.shift();
-
-          allyAxisdata.push({
-            name: name,
-            type: "bar",
-            label: { normal: { show: true, position: "top" } },
-            data: yAxisdata
-          });
-          allyAxisdata[0].type = "line";
-          allyAxisdata[0].label = "";
+          xAxisdata.shift();
+          allxAxisdata.push(xAxisdata)
+        }
+        
+        var allserisData = [],allserisName = []
+        for(var key in this.hotDataStayThirty){
+          var serisData = [],serisName = []
+          for (var m of  this.hotDataStayThirty[key]) {
+            legenddata.push(m["日期"]);
+            var yAxisdata = [];
+            for (var k in m) {
+              yAxisdata.push(m[k]);
+            }
+            var name = yAxisdata.shift();
+            serisData.push(yAxisdata)
+            serisName.push(name)
+          }
+         allserisData.push(serisData)
+         allserisName.push(serisName)
         }
         //echarts更新
-        var myChart = echarts.init(document.getElementById("hotStateThirty"));
-        myChart.setOption({
-          legend: {
-            data: legenddata
-          },
-          xAxis: [
-            {
-              data: xAxisdata
-            }
-          ],
-          series: allyAxisdata
-        });
+        intAllEcharts.setStateThirty(this,this.stayThirtyTemp,legenddata,allxAxisdata,allserisName,allserisData)
+  
       });
     },
 
     //驻足60秒 日统计
     getSixtyData() {
       var data = {
-        from_time: this.$dtime(this.$route.query.from_time).format(
-          "YYYY-MM-DD"
-        ),
+        from_time: this.$dtime(this.$route.query.from_time).format("YYYY-MM-DD"),
         to_time: this.$dtime(this.$route.query.to_time).format("YYYY-MM-DD"),
         staySecond: "60"
       };
       this.$global.httpGet("", "/show/hkrq/byday", data).then(res => {
         /*******/
-        this.hotDataStaySixty = analyseTable.analyseQUYUData(res.data);
+        var hotDataStaySixty = analyseTable.analyseQUYUData(res.data);
+        this.hotDataStaySixty = hotDataStaySixty
+        this.staySixtyTemp = hotDataStaySixty
+        intAllEcharts.intStateSixty(this,this.staySixtyTemp); //热度30秒初始化
         var legenddata = [],
-          xAxisdata = [],
+          allxAxisdata = [],
           allyAxisdata = [];
-        for (var n in analyseTable.analyseQUYUData(res.data)[0]) {
-          xAxisdata.push(n);
-        }
-        xAxisdata.shift();
-
-        for (var m of analyseTable.analyseQUYUData(res.data)) {
-          legenddata.push(m["日期"]);
-          var yAxisdata = [];
-          for (var k in m) {
-            yAxisdata.push(m[k]);
+        for (var n in this.hotDataStaySixty) {
+          var xAxisdata = []
+          for(var m in this.hotDataStaySixty[n][0]){
+              var date = this.$dtime(m).format('MM-DD')+'('+this.$dtime(m).format('ddd')+')'
+              xAxisdata.push(date);
           }
-          var name = yAxisdata.shift();
-
-          allyAxisdata.push({
-            name: name,
-            type: "bar",
-            label: { normal: { show: true, position: "top" } },
-            data: yAxisdata
-          });
-          allyAxisdata[0].type = "line";
-          allyAxisdata[0].label = "";
+          xAxisdata.shift();
+          allxAxisdata.push(xAxisdata)
+        }
+        
+        var allserisData = [],allserisName = []
+        for(var key in this.hotDataStaySixty){
+          var serisData = [],serisName = []
+          for (var m of  this.hotDataStaySixty[key]) {
+            legenddata.push(m["日期"]);
+            var yAxisdata = [];
+            for (var k in m) {
+              yAxisdata.push(m[k]);
+            }
+            var name = yAxisdata.shift();
+            serisData.push(yAxisdata)
+            serisName.push(name)
+          }
+         allserisData.push(serisData)
+         allserisName.push(serisName)
         }
         //echarts更新
-        var myChart = echarts.init(document.getElementById("hotStateSixty"));
-        myChart.setOption({
-          legend: {
-            data: legenddata
-          },
-          xAxis: [
-            {
-              data: xAxisdata
-            }
-          ],
-          series: allyAxisdata
-        });
+           intAllEcharts.setStateSixty(this,this.staySixtyTemp,legenddata,allxAxisdata,allserisName,allserisData)
+     
       });
     },
 
-    /***************热区驻留人数时间段统计**********************/
+    /***************热区驻留人数分时段统计**********************/
     getAvgTenData() {
       //驻足10秒 分时段统计
       var data = {
@@ -825,37 +798,18 @@ export default {
       };
       //获取表格数据
       this.$global.httpGet("", "/show/hkrq/byhour", data).then(res => {
-        var timeData = {};
-        for (var i = 0; i < res.data.length; i++) {
-          if (!timeData[res.data[i].time]) {
-            var arr = [];
-            arr.push(res.data[i]);
-            timeData[res.data[i].time] = arr;
-          } else {
-            timeData[res.data[i].time].push(res.data[i]);
-          }
-        }
-
-        var finnalavgData = [];
-        for (var j in timeData) {
-          var avgTenTemp = { 时间: j };
-          for (var m of timeData[j]) {
-            avgTenTemp[m.areaName] = m.stayPeopleCount;
-          }
-          finnalavgData.push(avgTenTemp);
-        }
-
+        // console.log(res.data)
+        var finnalavgData = analyseTable.analyseQUYUDaypart(res.data,this.searchTime.from_time,this.searchTime.to_time);
+    
         /*****/
-
-        var showData = [],
-          legendData = [],
+        var legendData = [],
           xAxisData = [];
-        for (var i in finnalavgData[0]) {
+        for (var i in finnalavgData[0][0]) {
           legendData.push(i);
         }
-        legendData.shift(); //
+        legendData.shift();
         //x轴时间轴
-        finnalavgData.forEach(item => {
+        finnalavgData[0].forEach(item => {
           if (
             item["时间"] >=
               this.$dtime(this.$route.query.from_time).format("HH:mm") &&
@@ -863,18 +817,14 @@ export default {
               this.$dtime(this.$route.query.to_time).format("HH:mm")
           ) {
             xAxisData.push(item["时间"]);
-            showData.push(item);
           }
         });
-        this.hotDataAvgStayFifteen = showData;
+        this.hotDataAvgStayFifteentemp = finnalavgData;
+        this.hotDataAvgStayFifteen = finnalavgData;
         //获取echarts数据
         this.$global.httpGet("", "/show/hkrq/byecharts", data).then(res => {
-          var temp = [],
-            showEchartsData = [];
+          var  showEchartsData = [];
           for (var k in res.data) {
-            if (res.data[k].length) {
-              temp.push(k);
-            }
             var echartsTemp = [];
             for (var m of res.data[k]) {
               for (var n in m) {
@@ -889,7 +839,6 @@ export default {
             }
             showEchartsData.push(echartsTemp);
           }
-          this.hotDataAvgStayFifteentemp = temp; 
           intAllEcharts.inthotAvgStateten(this, this.hotDataAvgStayFifteentemp);
           this.$nextTick(() => {
             for (let i = 1; i <= this.hotDataAvgStayFifteentemp.length; i++) {
@@ -920,35 +869,17 @@ export default {
       };
       //获取表格数据
       this.$global.httpGet("", "/show/hkrq/byhour", data).then(res => {
-        var timeData = {};
-        for (var i = 0; i < res.data.length; i++) {
-          if (!timeData[res.data[i].time]) {
-            var arr = [];
-            arr.push(res.data[i]);
-            timeData[res.data[i].time] = arr;
-          } else {
-            timeData[res.data[i].time].push(res.data[i]);
-          }
-        }
-        var finnalavgData = [];
-        for (var j in timeData) {
-          var avgTenTemp = { 时间: j };
-          for (var m of timeData[j]) {
-            avgTenTemp[m.areaName] = m.stayPeopleCount;
-          }
-          finnalavgData.push(avgTenTemp);
-        }
+        var finnalavgData = analyseTable.analyseQUYUDaypart(res.data,this.searchTime.from_time,this.searchTime.to_time);
         /*********/
 
-        var showData = [],
-          legendData = [],
+        var legendData = [],
           xAxisData = [];
-        for (var i in finnalavgData[0]) {
+        for (var i in finnalavgData[0][0]) {
           legendData.push(i);
         }
         legendData.shift(); //
         //x轴时间轴
-        finnalavgData.forEach(item => {
+        finnalavgData[0].forEach(item => {
           if (
             item["时间"] >=
               this.$dtime(this.$route.query.from_time).format("HH:mm") &&
@@ -956,19 +887,15 @@ export default {
               this.$dtime(this.$route.query.to_time).format("HH:mm")
           ) {
             xAxisData.push(item["时间"]);
-            showData.push(item);
           }
         });
-        this.hotDataAvgStayThirty = showData;
+         this.hotDataAvgStayThirtytemp = finnalavgData;
+        this.hotDataAvgStayThirty = finnalavgData;
 
         //获取echarts数据
         this.$global.httpGet("", "/show/hkrq/byecharts", data).then(res => {
-          var temp = [],
-            showEchartsData = [];
+          var  showEchartsData = [];
           for (var k in res.data) {
-            if (res.data[k].length) {
-              temp.push(k);
-            }
             var echartsTemp = [];
             for (var m of res.data[k]) {
               for (var n in m) {
@@ -983,9 +910,12 @@ export default {
             }
             showEchartsData.push(echartsTemp);
           }
-          this.hotDataAvgStayThirtytemp = temp;
+         
 
-          intAllEcharts.inthotAvgStateThirty(this,this.hotDataAvgStayThirtytemp); //热度分时段30秒初始化
+          intAllEcharts.inthotAvgStateThirty(
+            this,
+            this.hotDataAvgStayThirtytemp
+          ); //热度分时段30秒初始化
           this.$nextTick(() => {
             for (let i = 1; i <= this.hotDataAvgStayThirtytemp.length; i++) {
               var myChart = echarts.init(
@@ -1014,35 +944,16 @@ export default {
       };
       //获取表格数据
       this.$global.httpGet("", "/show/hkrq/byhour", data).then(res => {
-        var timeData = {};
-        for (var i = 0; i < res.data.length; i++) {
-          if (!timeData[res.data[i].time]) {
-            var arr = [];
-            arr.push(res.data[i]);
-            timeData[res.data[i].time] = arr;
-          } else {
-            timeData[res.data[i].time].push(res.data[i]);
-          }
-        }
-        var finnalavgData = [];
-        for (var j in timeData) {
-          var avgTenTemp = { 时间: j };
-          for (var m of timeData[j]) {
-            avgTenTemp[m.areaName] = m.stayPeopleCount;
-          }
-          finnalavgData.push(avgTenTemp);
-        }
+        var finnalavgData = analyseTable.analyseQUYUDaypart(res.data,this.searchTime.from_time,this.searchTime.to_time);
         /*********/
-
-        var showData = [],
-          legendData = [],
+         var legendData = [],
           xAxisData = [];
-        for (var i in finnalavgData[0]) {
+        for (var i in finnalavgData[0][0]) {
           legendData.push(i);
         }
         legendData.shift(); //
         //x轴时间轴
-        finnalavgData.forEach(item => {
+        finnalavgData[0].forEach(item => {
           if (
             item["时间"] >=
               this.$dtime(this.$route.query.from_time).format("HH:mm") &&
@@ -1050,19 +961,15 @@ export default {
               this.$dtime(this.$route.query.to_time).format("HH:mm")
           ) {
             xAxisData.push(item["时间"]);
-            showData.push(item);
           }
         });
-        this.hotDataAvgStaySixty = showData;
+        this.hotDataAvgStaySixtytemp = finnalavgData;
+        this.hotDataAvgStaySixty = finnalavgData;
 
         //获取echarts数据
         this.$global.httpGet("", "/show/hkrq/byecharts", data).then(res => {
-          var temp = [],
-            showEchartsData = [];
+          var showEchartsData = [];
           for (var k in res.data) {
-            if (res.data[k].length) {
-              temp.push(k);
-            }
             var echartsTemp = [];
             for (var m of res.data[k]) {
               for (var n in m) {
@@ -1077,7 +984,7 @@ export default {
             }
             showEchartsData.push(echartsTemp);
           }
-          this.hotDataAvgStaySixtytemp = temp;
+          
 
           intAllEcharts.inthotAvgStateSixty(this, this.hotDataAvgStaySixtytemp); //热度分时段60秒初始化
           this.$nextTick(() => {
@@ -1104,9 +1011,7 @@ export default {
 
     getPeopleAnalyseData() {
       var data = {
-        from_time: this.$dtime(this.$route.query.from_time).format(
-          "YYYY-MM-DD"
-        ),
+        from_time: this.$dtime(this.$route.query.from_time).format("YYYY-MM-DD"),
         to_time: this.$dtime(this.$route.query.to_time).format("YYYY-MM-DD"),
         type: 0
       };
@@ -1177,15 +1082,26 @@ export default {
 </script>
 
 <style  scoped>
+.allcameraPage{
+  width: 100%;
+  /* background: #F2F6FA; */
+}
 .cameraPage {
   width: 84%;
   margin: auto;
   /* background: #F2F6FA; */
 }
-.backwhite {
-  background: #fff;
+.pro_part {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
-
+.part_echarts {
+  width: 50%;
+}
+.part_table {
+  width: 50%;
+}
 .alltitle {
   padding-top: 15px;
   display: flex;
@@ -1240,6 +1156,7 @@ export default {
   font-size: 35px;
   text-align: center;
   height: 30px;
+  /* font-family:'SimHei' */
 }
 .stateSpicy_title {
   font-size: 22px;

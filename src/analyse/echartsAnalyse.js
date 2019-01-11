@@ -235,7 +235,7 @@ const echartsAnalyse = {
             {
               name: "客均逗留时长",
               type: "bar",
-              barWidth: "60",
+              barWidth: "20",
               label: {
                 normal: {
                   show: true,
@@ -266,7 +266,7 @@ const echartsAnalyse = {
             {
               name: "客均逗留时长",
               type: "bar",
-              barWidth: "60",
+              barWidth: "20",
               label: {
                 normal: {
                   show: true,
@@ -285,8 +285,10 @@ const echartsAnalyse = {
         });
     },
     //分时段统计echarts初始化
-    intDayParting() {
-        var myChart = echarts.init(document.getElementById("main_camera"));
+    intDayParting(this_,timePart) {
+      this_.$nextTick(() => {
+        for (var i = 1; i <= timePart.length; i++) {
+        var myChart = echarts.init(document.getElementById("main_camera"+i));
         myChart.setOption({
           title: {
             // text: '折线图堆叠'
@@ -314,10 +316,14 @@ const echartsAnalyse = {
           },
           series: []
         });
+      }
+      })
       },
       //分时段统计echarts更新
-      setOptions(title, Xdata, YDate) {
-        var myChart = echarts.init(document.getElementById("main_camera"));
+      setOptions(this_,timePart,title, Xdata, YDate) {
+        this_.$nextTick(() => {
+       for (var i = 1; i <= timePart.length; i++) {
+        var myChart = echarts.init(document.getElementById("main_camera"+i));
         myChart.setOption({
           legend: {
             data: title
@@ -325,22 +331,25 @@ const echartsAnalyse = {
           xAxis: {
             data: Xdata
           },
-          series: YDate
+          series: YDate[i-1]
         });
         window.onresize = function() {
           myChart.resize(); //若有多个图表变动，可多写
         };
+      }
+      })
       },
+      //分时段echarts数据分析
      analysePDDayPart(totalPData,startHour,endHour){
        var chartDate = []
       if (totalPData.length > 0) {
-        var temp =  dtime(totalPData[0].start_time).format("YYYY-MM-DD") + "(" + dtime(totalPData[0].start_time).format("dddd") + ")";
+        var temp =  dtime(totalPData[0].start_time).format("MM-DD") + "(" + dtime(totalPData[0].start_time).format("ddd") + ")";
         chartDate.push({ name: temp });
         totalPData.forEach((res, index) => {
           var tempHour = dtime(res.start_time).format("HH:mm");
           var tempHour2 = parseInt(dtime(res.start_time).format("HH"));
           if (tempHour2 >= startHour && tempHour2 <= endHour) {
-            var tempDate = dtime(res.start_time).format("YYYY-MM-DD") + "(" + dtime(res.start_time).format("dddd") + ")";
+            var tempDate = dtime(res.start_time).format("MM-DD") + "(" + dtime(res.start_time).format("ddd") + ")";
             if (temp == tempDate) {
               chartDate[chartDate.length - 1][tempHour] = res.enter;
             } else {
@@ -358,8 +367,10 @@ const echartsAnalyse = {
       return chartDate
      },
        //区域关注度逗留时间10秒
-    intStateFifteen() {
-        var myChart = echarts.init(document.getElementById("hotStateFifteen"));
+    intStateFifteen(this_,stayTenTemp) {
+      this_.$nextTick(() => {
+        for (var i = 1; i <= stayTenTemp.length; i++) {
+        var myChart = echarts.init(document.getElementById("hotStateFifteen"+i));
         myChart.setOption({
           tooltip: {
             trigger: "axis"
@@ -373,7 +384,11 @@ const echartsAnalyse = {
               data: [],
               axisPointer: {
                 type: "shadow"
-              }
+              },
+              axisLabel: {  
+                interval:0,  
+                // rotate:40  
+             }  
             }
           ],
           yAxis: [
@@ -387,11 +402,61 @@ const echartsAnalyse = {
           ],
           series: []
         });
-        
+      }
+      })
       },
+      //区域关注度逗留时间10s 更新 
+      setStateTen(this_,stayTenTemp,legenddata,allxAxisdata,allserisName,allserisData){
+        this_.$nextTick(() => {
+          for (var i = 1; i <= stayTenTemp.length; i++) {
+        var myChart = echarts.init(document.getElementById("hotStateFifteen"+i));
+        myChart.setOption({
+          legend: {
+            data: legenddata
+          },
+          xAxis: [
+            {
+              data: allxAxisdata[i-1]
+            }
+          ],
+          series: [{
+              name: allserisName[i-1][0],
+              type: "line",
+              label: { normal: { show: false, position: "top" } },
+              data:allserisData[i-1][0]
+          },
+          {
+              name: allserisName[i-1][1],
+              type: "bar",
+              barWidth: 12,
+              label: { normal: { show: true, position: "top" } },
+              data:allserisData[i-1][1]
+          },
+          {
+              name: allserisName[i-1][2],
+              type: "bar",
+              barWidth: 12,
+              label: { normal: { show: true, position: "top" } },
+              data:allserisData[i-1][2]
+          },
+          {
+              name: allserisName[i-1][3],
+              type: "bar",
+              barWidth: 12,
+              label: { normal: { show: true, position: "top" } },
+              data:allserisData[i-1][3]
+          },
+          ]
+        });
+          }
+        })
+      },
+
       //区域关注度逗留30秒
-      intStateThirty() {
-        var myChart = echarts.init(document.getElementById("hotStateThirty"));
+      intStateThirty(this_,stayThirtyTemp) {
+        this_.$nextTick(() => {
+          for (var i = 1; i <= stayThirtyTemp.length; i++) {
+        var myChart = echarts.init(document.getElementById("hotStateThirty"+i));
         myChart.setOption({
           tooltip: {
             trigger: "axis"
@@ -406,7 +471,11 @@ const echartsAnalyse = {
               data: [],
               axisPointer: {
                 type: "shadow"
-              }
+              },
+              axisLabel: {  
+                interval:0,  
+                // rotate:40  
+             } 
             }
           ],
           yAxis: [
@@ -420,11 +489,60 @@ const echartsAnalyse = {
           ],
           series: []
         });
-        
+        }
+        })
+      },
+      //区域关注度逗留时间30s 更新 
+      setStateThirty(this_,stayThirtyTemp,legenddata,allxAxisdata,allserisName,allserisData){
+        this_.$nextTick(() => {
+          for (var i = 1; i <= stayThirtyTemp.length; i++) {
+        var myChart = echarts.init(document.getElementById("hotStateThirty"+i));
+        myChart.setOption({
+          legend: {
+            data: legenddata
+          },
+          xAxis: [
+            {
+              data: allxAxisdata[i-1]
+            }
+          ],
+          series: [{
+              name: allserisName[i-1][0],
+              type: "line",
+              label: { normal: { show: false, position: "top" } },
+              data:allserisData[i-1][0]
+          },
+          {
+              name: allserisName[i-1][1],
+              type: "bar",
+              barWidth: 12,
+              label: { normal: { show: true, position: "top" } },
+              data:allserisData[i-1][1]
+          },
+          {
+              name: allserisName[i-1][2],
+              type: "bar",
+              barWidth: 12,
+              label: { normal: { show: true, position: "top" } },
+              data:allserisData[i-1][2]
+          },
+          {
+              name: allserisName[i-1][3],
+              type: "bar",
+              barWidth: 12,
+              label: { normal: { show: true, position: "top" } },
+              data:allserisData[i-1][3]
+          },
+          ]
+        });
+          }
+        })
       },
       //区域关注度逗留60秒
-      intStateSixty() {
-        var myChart = echarts.init(document.getElementById("hotStateSixty"));
+      intStateSixty(this_,staySixtyTemp) {
+        this_.$nextTick(() => {
+          for (var i = 1; i <= staySixtyTemp.length; i++) {
+        var myChart = echarts.init(document.getElementById("hotStateSixty"+i));
         myChart.setOption({
           tooltip: {
             trigger: "axis"
@@ -438,7 +556,11 @@ const echartsAnalyse = {
               data: [],
               axisPointer: {
                 type: "shadow"
-              }
+              },
+              axisLabel: {  
+                interval:0,  
+                // rotate:40  
+             } 
             }
           ],
           yAxis: [
@@ -452,7 +574,55 @@ const echartsAnalyse = {
           ],
           series: []
         });
-       
+      }
+      })
+      },
+      //区域关注度逗留时间60s 更新 
+      setStateSixty(this_,staySixtyTemp,legenddata,allxAxisdata,allserisName,allserisData){
+        this_.$nextTick(() => {
+          for (var i = 1; i <= staySixtyTemp.length; i++) {
+        var myChart = echarts.init(document.getElementById("hotStateSixty"+i));
+        myChart.setOption({
+          legend: {
+            data: legenddata
+          },
+          xAxis: [
+            {
+              data: allxAxisdata[i-1]
+            }
+          ],
+          series: [{
+              name: allserisName[i-1][0],
+              type: "line",
+              barWidth: 12,
+              label: { normal: { show: false, position: "top" } },
+              data:allserisData[i-1][0]
+          },
+          {
+              name: allserisName[i-1][1],
+              type: "bar",
+              barWidth: 12,
+              label: { normal: { show: true, position: "top" } },
+              data:allserisData[i-1][1]
+          },
+          {
+              name: allserisName[i-1][2],
+              type: "bar",
+              barWidth: 12,
+              label: { normal: { show: true, position: "top" } },
+              data:allserisData[i-1][2]
+          },
+          {
+              name: allserisName[i-1][3],
+              type: "bar",
+              barWidth: 12,
+              label: { normal: { show: true, position: "top" } },
+              data:allserisData[i-1][3]
+          },
+          ]
+        });
+          }
+        })
       },
       //消费者画像 年龄比例
       intAgeEcharts() {
@@ -554,30 +724,6 @@ const echartsAnalyse = {
             var myChart = echarts.init(
               document.getElementById("hotAvgStateFifteen" + i)
             );
-            if (i == 1) {
-              myChart.setOption({
-                title: {
-                  text: "工作日各时段关注度对比（10秒以上）",
-                  left: "20",
-                  top: "20"
-                },
-                textStyle: {
-                  fontStyle: "normal", //风格
-                  fontWeight: "normal", //粗细
-                  fontFamily: "Microsoft yahei", //字体
-                  fontSize: 14, //大小
-                  align: "center" //水平对齐
-                }
-              });
-            } else {
-              myChart.setOption({
-                title: {
-                  text: "节假日各时段关注度对比（10秒以上）",
-                  left: "20",
-                  top: "20"
-                }
-              });
-            }
             myChart.setOption({
               tooltip: {
                 trigger: "axis"
@@ -612,23 +758,6 @@ const echartsAnalyse = {
             var myChart = echarts.init(
               document.getElementById("hotAvgStateThirty" + i)
             );
-            if (i == 1) {
-              myChart.setOption({
-                title: {
-                  text: "工作日各时段关注度对比（30秒以上）",
-                  left: "20",
-                  top: "20"
-                }
-              });
-            } else {
-              myChart.setOption({
-                title: {
-                  text: "节假日各时段关注度对比（30秒以上）",
-                  left: "20",
-                  top: "20"
-                }
-              });
-            }
             myChart.setOption({
               tooltip: {
                 trigger: "axis"
@@ -663,23 +792,6 @@ const echartsAnalyse = {
             var myChart = echarts.init(
               document.getElementById("hotAvgStateSixty" + i)
             );
-            if (i == 1) {
-              myChart.setOption({
-                title: {
-                  text: "工作日各时段关注度对比（60秒以上）",
-                  left: "20",
-                  top: "20"
-                }
-              });
-            } else {
-              myChart.setOption({
-                title: {
-                  text: "节假日各时段关注度对比（60秒以上）",
-                  left: "20",
-                  top: "20"
-                }
-              });
-            }
             myChart.setOption({
               tooltip: {
                 trigger: "axis"
@@ -717,10 +829,8 @@ const echartsAnalyse = {
                 trigger: "axis",
                 axisPointer: {
                   type: "shadow"
-                }
-              },
-              tooltip: {
-                formatter: "{a} <br/>{b} {c}%"
+                },
+                // formatter: "{a} <br/>{b} {c}%"
               },
               legend: {
                 data: []
