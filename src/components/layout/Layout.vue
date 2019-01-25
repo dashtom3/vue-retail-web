@@ -11,15 +11,20 @@
           class="menu-container"
           @select="goPage"
         >
-          <el-menu-item :index="index+''" v-for="item,index in data">
-            <i v-bind:class="item[2]"></i>
-            <span slot="title">{{item[0]}}</span>
-          </el-menu-item>
+          <el-submenu :index="index+''" v-for="item,index in data">
+            <template slot="title">
+              <i v-bind:class="item.icon"></i>
+              <span>{{item.name}}</span>
+            </template>
+            <el-menu-item :index="index+'-'+index1" v-for="item1,index1 in item.data">
+              <span slot="title">{{item1[0]}}</span>
+            </el-menu-item>
+          </el-submenu>
         </el-menu>
     </div>
     <div class="main-container">
       <div class="navbar">
-        <!-- navbar -->
+        {{selectData[0]}}
       </div>
       <section class="app-main">
         <transition name="fade-transform" mode="out-in">
@@ -37,28 +42,20 @@ export default {
   name: 'Layout',
   data () {
     return {
-      // data:[['实时客流统计','Detail','el-icon-time'],['区域驻留统计','HotData','el-icon-edit'],["客群分析",'peopleAnalyse','el-icon-time']]
-      data:[]
+      data:[{name:'配置管理',icon:'el-icon-edit',data:[['门店配置','ConfigSubshop',''],['设备管理','ConfigDevice','']]},
+      {name:'客流数据',icon:'el-icon-view',data:[['数据总览','DataScreen',''],['客流数据','StoreRLData',''],['进店逗留时间','StoreDLData',''],['区域关注度','StoreRQData','']]},],
+      selectData:0,
     }
   },
   created(){
-    console.log(this.$route.path)
-    if(this.$route.path == '/peopleanalyse'){
-      this.data.push(["客群分析",'peopleAnalyse','el-icon-time'])
-    }
-    if(this.$route.path == '/hotData'){
-       this.data.push(['区域驻留统计','HotData','el-icon-edit'])
-    }
-    if(this.$route.path == '/detail'){
-       this.data.push(['实时客流统计','Detail','el-icon-time'])
-    }
-  },
-  destroyed(){
-
+    // console.log(this.$router)
   },
   methods: {
     goPage(key){
-      this.$router.push({name:this.data[key][1]})
+      // console.log(key)
+      const temp = key.split('-')
+      this.selectData = this.data[temp[0]].data[temp[1]]
+      this.$router.push({name:this.selectData[1]})
     }
   }
 }
@@ -81,6 +78,9 @@ export default {
   background-color: rgb(48, 65, 86);
   height: 100%;
 }
+/* .app-main {
+  min-height:calc(100vh - 84px);
+} */
 .sidebar-container {
   transition: width 0.28s;
   width: 180px !important;
@@ -147,4 +147,5 @@ export default {
     position: absolute;
     z-index: 999;
   }
+
 </style>

@@ -1,7 +1,7 @@
 import axios from 'axios'
 import qs from 'qs'
 export default {
-  baseUrl: 'http://localhost:8002',
+  baseUrl: 'http://localhost:8002/',
   // baseUrl:'http://116.62.228.3:8002',
   // goPath: function (obj, url) {
   //   document.body.scrollTop = 0 + 'px'
@@ -49,17 +49,18 @@ export default {
       })
     })
   },
-  httpPostWithToken(self, url, data) {
+  httpPostWithToken(self,url,data){
     return new Promise((resolve, reject) => {
-      axios.post(this.baseUrl + url + "?token=" + this.getToken(), data).then((res) => {
-        if (res.data.status == 1) {
+      axios.post(this.baseUrl + url + "?token="+this.getToken(),data).then((res)=>{
+        if(res.data.status == 1){
           resolve(res.data)
-        } else {
-          this.error(self, res.data.message, '')
+        }else {
+          this.error(self,res.data.message,'')
           reject(res.data.message)
         }
-      }).catch((error) => {
-        this.error(self, '网络错误', '')
+      }).catch((error)=>{
+        console.log(error)
+        this.error(self,'网络错误','')
       })
     })
   },
