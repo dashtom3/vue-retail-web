@@ -1,18 +1,37 @@
 <template>
   <div>
     <div class="title">
-      <span>实体</span>
-      <el-input class="titleinput" placeholder="请输入内容" v-model="subshopName" :disabled="true"></el-input>
+      <el-form :model="zlForm" size="mini">
+      <el-form-item label="实体">
+          <el-select class="rlselect" v-model="zlForm.name" placeholder="请选择">
+            <el-option v-for="item in zlOptions" :key="item.value" :label="item.label" :value="item.value">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="日期">
+          <el-date-picker  v-model="zlForm.dateDay" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
+         
+        </el-form-item>
+        <el-form-item label="时间">
+          <el-time-select class="timeSelect" placeholder="起始时间" v-model="zlForm.startTime" :picker-options="{
+            start: '00:00',
+            step: '01:00',
+            end: '24:00'
+          }">
+          </el-time-select>
+          <el-time-select class="timeSelect" placeholder="结束时间" v-model="zlForm.endTime" :picker-options="{
+            start: '00:00',
+            step: '01:00',
+            end: '24:00',
+            minTime: zlForm.startTime
+          }">
+          </el-time-select>
+          <el-button type="primary" @click="searchInfo(zlForm)" class="searchButton">查询</el-button>
+          </el-form-item>
+      </el-form>
     </div>
     <div>
-      <el-tabs v-model="activeName" @tab-click="handleClick">
-        <el-tab-pane label="显示图表" name="first">
-          <div id="main" style="width:100%;height:400px"></div>
-        </el-tab-pane>
-        <el-tab-pane label="显示数据" name="second">
-          配置管理
-        </el-tab-pane>
-      </el-tabs>
+       <div id="main" style="width:100%;height:400px"></div>
     </div>
   </div>
 </template>
@@ -24,8 +43,13 @@ export default {
 
   data() {
     return {
-      subshopName: "上海辰尚科技",
-      activeName: "first"
+      zlOptions: [{ label: "上海辰尚信息科技有限公司", value: "1" }],
+      zlForm: {
+        name: "1",
+        dateDay: "",
+        startTime:'',
+        endTime:''
+      },
     };
   },
   mounted() {

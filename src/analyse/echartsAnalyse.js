@@ -156,7 +156,16 @@ const echartsAnalyse = {
                     data: [],
                     axisPointer: {
                         type: "shadow"
-                    }
+                    },
+                    axisLabel:{
+                      interval:0,
+                      rotate:45,//倾斜度 -90 至 90 默认为0
+                      margin:4,
+                      // textStyle:{
+                      //   fontWeight:"bolder",
+                      //     color:"#000000"
+                      // }
+                  },
                 }
             ],
             yAxis: [
@@ -220,9 +229,18 @@ const echartsAnalyse = {
             {
               type: "category",
               data: [],
-              axisTick: {
-                alignWithLabel: true
-              }
+              // axisTick: {
+              //   alignWithLabel: true
+              // },
+              axisLabel:{
+                interval:0,
+                rotate:45,//倾斜度 -90 至 90 默认为0
+                margin:4,
+                // textStyle:{
+                //   fontWeight:"bolder",
+                //     color:"#000000"
+                // }
+            },
             }
           ],
           yAxis: [
@@ -843,7 +861,7 @@ const echartsAnalyse = {
               },
               xAxis: {
                 type: "value",
-                axisLabel: { formatter: "{value} %" }
+                axisLabel: { formatter: "{value}" }
               },
               yAxis: {
                 type: "category",
@@ -854,5 +872,6 @@ const echartsAnalyse = {
           }
         });
       },
+    
 }
 export default echartsAnalyse

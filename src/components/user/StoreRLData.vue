@@ -80,7 +80,7 @@ export default {
 
   data() {
     return {
-      rlOptions: [{ label: "上海同济大学创业谷", value: "1" }],
+      rlOptions: [{ label: "上海辰尚信息科技有限公司", value: "1" }],
       rlForm: {
         name: "1",
         quota: "enter",
@@ -100,6 +100,8 @@ export default {
   },
   mounted() {
     this.intEcharts();
+    this.rlForm.dateHour = this.$dtime(this.$dtime(new Date()).format('x') - 24*3600*1000).format('YYYY-MM-DD')
+    this.searchInfo('0')
   },
   methods: {
     getData(data) {

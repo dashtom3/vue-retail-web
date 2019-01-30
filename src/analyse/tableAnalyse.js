@@ -190,7 +190,7 @@ const tableAnalyse = {
            stayPeopleCount = stayPeopleCount + n.stayPeopleCount
          }
         temp['时间'] = key;
-        temp[m] = (stayPeopleCount / dataWeek[key][m].length).toFixed(0)
+        temp[m] = stayPeopleCount
        }
        weektempArr.push(temp)
      }
@@ -232,7 +232,7 @@ const tableAnalyse = {
             stayPeopleCount = stayPeopleCount + n.stayPeopleCount
           }
          temp['时间'] = key;
-         temp[m] = (stayPeopleCount / dataunWeek[key][m].length).toFixed(0)
+         temp[m] = stayPeopleCount
         }
         unweektempArr.push(temp)
       }
@@ -328,38 +328,39 @@ const tableAnalyse = {
       temp.value = data[key]
       dataArr.push(temp)
     }
-
+    
     var dataTable = this.chunk(dataArr,7)
     dataTable.forEach(res =>{
       var arrList = {}
       res.forEach(single =>{  
         single.value.forEach(sin => {
             var time = dtime(sin.start_time).format("HH:mm");
-           if (!arrList[time]) {
+           if (!arrList[sin.name]) {
             var arr = [];
             arr.push(sin);
-            arrList[time] = arr;
+            arrList[sin.name] = arr;
         } else {
-            arrList[time].push(sin)
+            arrList[sin.name].push(sin)
         }
         })
           
       })
+      // console.log(arrList)
         var allTemp = {},allArrList = []
        for(var k in arrList){
-         if(k >= from_time && k <= to_time){
          var temp = {'时间':''}
          for(var d of arrList[k]){
-           var date = dtime(d.start_time).format("YYYY-MM-DD") + "(" + dtime(d.start_time).format("ddd") + ")";
+           var date = dtime(d.date).format("YYYY-MM-DD") + "(" + dtime(d.date).format("ddd") + ")";
            temp['时间'] = k
-           temp[date] =Math.round(d.enter / daytotalEnter[date] * 1000) / 10+"%"
+           temp[date] = d.enter
            allTemp[k] = temp
          }
-          }
+          
        }
         allArrList.push(allTemp)
         tableGroupData.push(allArrList)
     })
+
     var groupArr = []
     for(var k in tableGroupData){
       var groupArrTemp = []
@@ -370,7 +371,7 @@ const tableAnalyse = {
       }
       groupArr.push(groupArrTemp)
     }
-
+    // console.log(groupArr)
         return groupArr
  },
     //方法 把大数组分成n个等数组

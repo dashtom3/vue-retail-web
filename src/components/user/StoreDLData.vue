@@ -55,7 +55,7 @@ export default {
 
   data() {
     return {
-      dlOptions: [{ label: "上海同济大学创业谷", value: "1" }],
+      dlOptions: [{ label: "上海辰尚信息科技有限公司", value: "1" }],
       dlForm: {
         name: "1",
         quota: "enter",
@@ -69,6 +69,8 @@ export default {
   },
   mounted() {
     this.intEcharts();
+    this.dlForm.dateHour = this.$dtime(this.$dtime(new Date()).format('x') - 24*3600*1000).format('YYYY-MM-DD')
+    this.searchInfo('0')
   },
   methods: {
     searchInfo(val) {
@@ -110,8 +112,14 @@ export default {
               console.log(res.data[0].data)
               var tableData = []
               res.data[0].data.forEach(item =>{
-                  tableData.push()
+                var timeRange = this.$dtime(item.from).format('HH:mm')+'~'+this.$dtime(item.to).format('HH:mm')
+                  tableData.push({
+                    date:item.name+'('+ timeRange +')',
+                    time:Number(item.time).toFixed(0)
+                  })
               })
+              this.tableRLData = tableData
+              this.analyseEachrts(this.tableRLData)
         });
     },
     analyseEachrts(tableRLData){
@@ -131,8 +139,8 @@ export default {
       //excel数据导出
       require.ensure([], () => {
         const { export_json_to_excel } = require("../../assets/js/Export2Excel");
-        const tHeader = ["日期", "进店人数", "出店人数"];
-        const filterVal = ["date", "enter", "exit"];
+        const tHeader = ["日期", "滞留人数"];
+        const filterVal = ["date", "time"];
         const list = this.tableRLData;
         const data = this.formatJson(filterVal, list);
         var DATE = this.$dtime(new Date()).format("YYYY-MM-DD");
