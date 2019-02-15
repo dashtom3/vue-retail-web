@@ -56,8 +56,8 @@ export default {
     this.intEcharts()
   },
   methods: {
-    handleClick(tab, event) {
-      console.log(tab, event);
+    searchInfo(val) {
+      console.log(val);
     },
     intEcharts() {
       var myChart = echarts.init(document.getElementById("main"));

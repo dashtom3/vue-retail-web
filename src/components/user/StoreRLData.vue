@@ -118,9 +118,7 @@ export default {
         });
     },
     searchInfo(val) {
-
       var deviceIds = 1 //通过调用接口获取
-
       if (val == "0") {
         var data = {//天
           deviceIds: deviceIds,

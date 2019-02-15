@@ -21,7 +21,7 @@
               <span>{{analyse_titleDate.maxAvg}}</span>
             </div>
           </div>
-          <div id="TotalStateArg" style="width:100%;height:400px;display:inline-block"></div>
+          <div id="flowTotal" style="width:100%;height:400px;display:inline-block"></div>
         </div>
         <div class="alltitle_left">
           <div class="left_title">
@@ -34,7 +34,7 @@
               <span>{{analyse_titleDate.maxStateAvg}}分</span>
             </div>
           </div>
-          <div id="flowTotal" style="width:100%;height:400px;display:inline-block"></div>
+          <div id="TotalStateArg" style="width:100%;height:400px;display:inline-block"></div>
         </div>
       </div>
     </div>
@@ -234,7 +234,7 @@ export default {
       averageStateTime: [], //客均逗留时长表格数据(海康客流)
       totalPTableData: [], //分时段表格显示数据(海康客流)
       timeTotalResData:[],
-      timeTotalDate: [], //分时段逗留比重表格显示数据(海康客流)
+      timeTotalDate: [], //分时段逗留时长表格显示数据(海康客流)
       daytotalEnter: {}, //当天总人数(海康客流)
       daytotalEnterTable:{},//当天总人数(表格用)
 
@@ -323,15 +323,17 @@ export default {
         to_time: this.$route.query.to_time
       };
       this.$global.httpGet("", "show/hkrl/byhour", data).then(res => {
-        this.totalPData = res.data.data;
-        if (res.data.total) {
-          this.analyse_titleDate.allPeople = res.data.total[0].enter;
-        }
+        this.totalPData = res.data;
         this.analyseTotalP(); //分时段表格处理
         this.analyseEacharts(); //分时段echarts数据处理
 
         this.$global.httpGet("", "show/hkrl/byday", data).then(res => {
-          this.dayTotalPData = res.data.data;
+          this.dayTotalPData = res.data;
+          var allpeopleEnter = 0
+          res.data.forEach(res =>{
+            allpeopleEnter = allpeopleEnter + res.enter
+          })
+           this.analyse_titleDate.allPeople = allpeopleEnter
           this.analyseDay(); //调用日数据表格方法
         });
       });
@@ -345,7 +347,7 @@ export default {
       var dayX = [],
           dayY = [],
           temdata = [];
-      var resData = analyseTable.analyseDay(this.dayTotalPData);
+      var resData = analyseTable.analyseDay(this.dayTotalPData,this.searchTime.from_time,this.searchTime.to_time);
       this.daytotalEnterTable = resData.daytotalEnter
       var timePartTemp = {}
      for(var key in resData.daytotalEnter){
@@ -409,8 +411,8 @@ export default {
             this.$dtime(i.date).format("ddd") +
             ")";
           legenddata.push(dateTime);
-          seriesData.push(i.time);
-          dateArg[dateTime] = i.time;
+          seriesData.push(Number(i.time).toFixed(0));
+          dateArg[dateTime] = Number(i.time).toFixed(0);
         }
         dataTemp.push(dateArg);
         this.averageStateTime = dataTemp;
@@ -484,9 +486,9 @@ export default {
     },
     /*****************************************************/
 
-    /***************客均分时段逗留人数模块*******************/
+    /***************客均分时段逗留时长模块*******************/
 
-    //分析时段比重表格数据处理
+    //分析时段逗留时长表格数据处理
     analyseTime() {
       var data = {
         from_time:this.$dtime(this.$route.query.from_time).format('YYYY-MM-DD'),
@@ -502,7 +504,7 @@ export default {
                     var temp = {
                       date:item.date,
                       name:single.name,
-                      enter:single.time
+                      enter:Number(single.time).toFixed(0)
                     }
                     totalPData.push(temp)
               })

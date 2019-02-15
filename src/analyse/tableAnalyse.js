@@ -3,16 +3,18 @@ const tableAnalyse = {
 
     //
     //日数据表格处理
-    analyseDay(dayTotalPData) {
-        var totalDate = {};
+    analyseDay(dayTotalPData,from_time,to_time) {
+        var totalDate = {日期: "进店人数"};
         var echartsDate = {};
         if (dayTotalPData.length > 0) {
+          
             var temp =
                 dtime(dayTotalPData[0].start_time).format("YYYY-MM-DD") +
                 "(" +
                 dtime(dayTotalPData[0].start_time).format("dddd") +
                 ")";
             dayTotalPData.forEach(res => {
+              // if(dtime(res.start_time).format("HH:mm") >= from_time && dtime(res.start_time).format("HH:mm")<= to_time){
                 var tempDate =
                     dtime(res.start_time).format("YYYY-MM-DD") +
                     "(" +
@@ -27,12 +29,13 @@ const tableAnalyse = {
                     totalDate[tempDate] = res.enter;
                     echartsDate[tempDate] = res.enter;
                 }
+              // }
             });
             var daytotalEnter = echartsDate;
             var dayTotalData = [];
             dayTotalData.push(totalDate);
             return { dayTotalData: dayTotalData, daytotalEnter: daytotalEnter }
-
+          
         }
     },
     //区域关注度日统计 10s,30s,60s数据分析
