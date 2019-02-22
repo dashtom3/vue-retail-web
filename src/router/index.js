@@ -14,14 +14,15 @@ import DataScreen from '@/components/user/DataScreen'
 import StoreRLData from '@/components/user/StoreRLData'
 import StoreDLData from '@/components/user/StoreDLData'
 import StoreRQData from '@/components/user/StoreRQData'
+import ExportPage from '@/components/user/ExportPage'
 Vue.use(Router)
 
 export default new Router({
   routes: [
     {
       path: '/',
-      name: 'Main',
-      component: Main
+      name: 'Layout',
+      component: Layout
     },
     {
       path:'/cameraPage',
@@ -77,6 +78,11 @@ export default new Router({
           path:'/user/storeRQData',
           component: StoreRQData,
           name:'StoreRQData'
+        },
+        {
+          path:'/user/exportPage',
+          component: ExportPage,
+          name:'ExportPage'
         },
       ]
     }

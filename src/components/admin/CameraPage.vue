@@ -282,11 +282,11 @@ export default {
       to_date: this.$dtime(this.$route.query.to_time)
         .format("YYYY-MM-DD")
         .replace(/-/g, ""),
-      from_time: this.$dtime(this.$route.query.from_time).format("HH:mm"),
-      to_time: this.$dtime(this.$route.query.to_time).format("HH:mm")
+      from_time: this.$route.query.from_time.substring(11,16),
+      to_time: this.$route.query.to_time.substring(11,16)
     };
-    this.startHour = parseInt(this.$dtime(this.$route.query.from_time).format("HH"));
-    this.endHour = parseInt(this.$dtime(this.$route.query.to_time).format("HH"));
+    this.startHour = Number(this.$route.query.from_time.substring(11,13));
+    this.endHour = Number(this.$route.query.to_time.substring(11,13));
     this.getCameraData(); //获取进店客流接口数据
     /*echats图表初始化*/
     this.intEacharts(); //echarts初始化
@@ -439,7 +439,7 @@ export default {
         Xdata = [];
       if (this.totalPData.length > 0) {
         var chartDate = intAllEcharts.analysePDDayPart(this.totalPData,this.startHour,this.endHour);
-        for (let i = this.startHour; i <= this.endHour; i++) {
+        for (let i = this.startHour; i < this.endHour; i++) {
           Xdata.push(i + ":00");
         }
         chartDate.forEach(item => {
@@ -474,11 +474,7 @@ export default {
           res.date = this.$dtime(res.start_time).format("YYYY-MM-DD");
         });
 
-        var tableGroupData = analyseTable.gettableGroup(
-          this.searchTime.from_time,
-          this.searchTime.to_time,
-          this.totalPData
-        );
+        var tableGroupData = analyseTable.gettableGroup(this.searchTime.from_time,this.searchTime.to_time,this.totalPData);
         this.totalPTableData = tableGroupData;
         this.timePart = tableGroupData;
         intAllEcharts.intDayParting(this, this.timePart); //分时段初始化echarts
@@ -591,14 +587,14 @@ export default {
     },
     /******************************************************/
 
-    /********************热度图总览模块******************/
+    /********************商品关注总览模块******************/
 
-    //获取区域热度总览接口数据
+    //获取商品关注总览接口数据
     getHotData() {
       // var getHotData = intAllEcharts.anaHotData(this.allHotData)
       var data = {
-        from_time: this.$dtime(this.$route.query.from_time).format("YYYY-MM-DD HH:mm"),
-        to_time: this.$dtime(this.$route.query.to_time).format("YYYY-MM-DD HH:mm"),
+        from_time: this.$route.query.from_time,
+        to_time: this.$route.query.to_time,
       };
       this.$global.httpGet("", "show/hkrq/byall", data).then(res => {
         var staydata = {};
@@ -657,8 +653,8 @@ export default {
     getTenData() {
       //驻足10秒 日统计
       var data = {
-        from_time: this.$dtime(this.$route.query.from_time).format("YYYY-MM-DD HH:mm:ss"),
-        to_time: this.$dtime(this.$route.query.to_time).format("YYYY-MM-DD HH:mm:ss"),
+        from_time: this.$route.query.from_time,
+        to_time: this.$route.query.to_time,
         staySecond: "10"
       };
       this.$global.httpGet("", "show/hkrq/byday", data).then(res => {
@@ -709,8 +705,8 @@ export default {
     getThirtyData() {
       //30秒
       var data = {
-        from_time: this.$dtime(this.$route.query.from_time).format("YYYY-MM-DD HH:mm"),
-        to_time: this.$dtime(this.$route.query.to_time).format("YYYY-MM-DD HH:mm"),
+        from_time: this.$route.query.from_time,
+        to_time: this.$route.query.to_time,
         staySecond: "30"
       };
       this.$global.httpGet("", "show/hkrq/byday", data).then(res => {
@@ -761,8 +757,8 @@ export default {
     //驻足60秒 日统计
     getSixtyData() {
       var data = {
-        from_time: this.$dtime(this.$route.query.from_time).format("YYYY-MM-DD HH:mm"),
-        to_time: this.$dtime(this.$route.query.to_time).format("YYYY-MM-DD HH:mm"),
+        from_time: this.$route.query.from_time,
+        to_time: this.$route.query.to_time,
         staySecond: "60"
       };
       this.$global.httpGet("", "show/hkrq/byday", data).then(res => {
@@ -832,11 +828,7 @@ export default {
         //x轴时间轴
         finnalavgData[0].forEach(item => {
           if (
-            item["时间"] >=
-              this.$dtime(this.$route.query.from_time).format("HH:mm") &&
-            item["时间"] <=
-              this.$dtime(this.$route.query.to_time).format("HH:mm")
-          ) {
+            item["时间"] >= this.searchTime.from_time && item["时间"] < this.searchTime.to_time) {
             xAxisData.push(item["时间"]);
           }
         });
@@ -902,10 +894,7 @@ export default {
         //x轴时间轴
         finnalavgData[0].forEach(item => {
           if (
-            item["时间"] >=
-              this.$dtime(this.$route.query.from_time).format("HH:mm") &&
-            item["时间"] <=
-              this.$dtime(this.$route.query.to_time).format("HH:mm")
+            item["时间"] >=  this.searchTime.from_time &&  item["时间"] < this.searchTime.to_time
           ) {
             xAxisData.push(item["时间"]);
           }
@@ -975,12 +964,7 @@ export default {
         legendData.shift(); //
         //x轴时间轴
         finnalavgData[0].forEach(item => {
-          if (
-            item["时间"] >=
-              this.$dtime(this.$route.query.from_time).format("HH:mm") &&
-            item["时间"] <=
-              this.$dtime(this.$route.query.to_time).format("HH:mm")
-          ) {
+          if (item["时间"] >= this.searchTime.from_time && item["时间"] < this.searchTime.to_time) {
             xAxisData.push(item["时间"]);
           }
         });

@@ -29,9 +29,9 @@
           <el-date-picker v-if="rlForm.dimension == '2'" v-model="rlForm.dateWeekEnd" class="timeSelect" type="week" format="yyyy 第 WW 周" placeholder="结束周"></el-date-picker>
           <el-date-picker v-if="rlForm.dimension == '3'" v-model="rlForm.dateMonthStart" class="timeSelect" type="month" placeholder="起始月"></el-date-picker>
           <el-date-picker v-if="rlForm.dimension == '3'" v-model="rlForm.dateMonthEnd" class="timeSelect" type="month" placeholder="结束月"></el-date-picker>
-
+          <el-button v-if="rlForm.dimension == '3' || rlForm.dimension == '2'" type="primary" @click="searchInfo(rlForm.dimension)" class="searchButton">查询</el-button>
         </el-form-item>
-        <el-form-item label="时间">
+        <el-form-item label="时间" v-if="rlForm.dimension=='0' || rlForm.dimension=='1'">
           <el-time-select class="timeSelect" placeholder="起始时间" v-model="rlForm.startTime" :picker-options="{
             start: '00:00',
             step: '01:00',
@@ -104,19 +104,6 @@ export default {
     this.searchInfo('0')
   },
   methods: {
-    getData(data) {
-      var data = {
-        deviceIds: data.deviceIds,
-        from_time: data.from_time,
-        to_time: data.to_time,
-        dimension: data.dimension
-      };
-      this.$global
-        .httpGetWithToken(this, "system/getrldata/bydimension", data)
-        .then(res => {
-          console.log(res.data);
-        });
-    },
     searchInfo(val) {
       var deviceIds = 1 //通过调用接口获取
       if (val == "0") {

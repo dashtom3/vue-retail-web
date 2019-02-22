@@ -92,7 +92,6 @@ export default {
         }
         this.getDayData(data)
       }
-      
     },
     getDayData(data) {
       this.$global.httpGetWithToken(this, "show/hkdl/byDay", data).then(res => {

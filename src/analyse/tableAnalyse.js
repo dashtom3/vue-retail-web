@@ -159,7 +159,7 @@ const tableAnalyse = {
         var dataWeek = {};
         for (var i = 0; i < tableWeekData.length; i++) {
           var time = dtime(tableWeekData[i].start_time).format('HH:mm')
-          if(time<=endTime && time>=startTime){
+          if(time < endTime && time >= startTime){
             if (!dataWeek[time]) {
                 var arr = [];
                 arr.push(tableWeekData[i]);
@@ -201,7 +201,7 @@ const tableAnalyse = {
      var dataunWeek = {};
         for (var i = 0; i < tableUnweekData.length; i++) {
           var time = dtime(tableUnweekData[i].start_time).format('HH:mm')
-          if(time<=endTime && time>=startTime){
+          if(time < endTime && time >= startTime){
             if (!dataunWeek[time]) {
                 var arr = [];
                 arr.push(tableUnweekData[i]);
@@ -283,7 +283,7 @@ const tableAnalyse = {
          })
            var allTemp = {},allArrList = []
           for(var k in arrList){
-            if(k >= from_time && k <= to_time){
+            if(k >= from_time && k < to_time){
             var temp = {'时间':''}
             for(var d of arrList[k]){
               var date = dtime(d.start_time).format("YYYY-MM-DD") + "(" + dtime(d.start_time).format("ddd") + ")";
