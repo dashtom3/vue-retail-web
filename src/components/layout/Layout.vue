@@ -43,7 +43,8 @@ export default {
   data () {
     return {
       data:[{name:'配置管理',icon:'el-icon-edit',data:[['门店配置','ConfigSubshop',''],['设备管理','ConfigDevice','']]},
-      {name:'客流数据',icon:'el-icon-view',data:[['数据总览','DataScreen',''],['客流数据','StoreRLData',''],['进店逗留时间','StoreDLData',''],['区域关注度','StoreRQData','']]},],
+      {name:'客流数据',icon:'el-icon-view',data:[['数据总览','DataScreen',''],['客流数据','StoreRLData',''],['进店逗留时间','StoreDLData',''],['区域关注度','StoreRQData','']]},
+      {name:'数据报告',icon:'el-icon-download',data:[['导出数据报告','ExportPage','']]},],
       selectData:0,
     }
   },

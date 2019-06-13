@@ -1,8 +1,8 @@
 import axios from 'axios'
 import qs from 'qs'
 export default {
-  baseUrl: 'http://localhost:8002/',
-  // baseUrl:'http://116.62.228.3:8002',
+  // baseUrl: 'http://localhost:8002/',
+  baseUrl:'http://116.62.228.3:8002/',
   // goPath: function (obj, url) {
   //   document.body.scrollTop = 0 + 'px'
   //   obj.$router.push({ name: url })

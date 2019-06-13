@@ -62,9 +62,9 @@
           <el-table :data="tableRLData" border stripe style="width: 100%">
             <el-table-column prop="date" align="center" label="时间">
             </el-table-column>
-            <el-table-column prop="enter" align="center" label="进店人数">
+            <el-table-column v-if="rlForm.quota == 'enter'" prop="enter" align="center" label="进店人数">
             </el-table-column>
-            <el-table-column prop="exit" align="center" label="离店人数">
+            <el-table-column v-if="rlForm.quota == 'exit'" prop="exit" align="center" label="离店人数">
             </el-table-column>
           </el-table>
         </el-tab-pane>
@@ -107,7 +107,7 @@ export default {
     searchInfo(val) {
       var deviceIds = 1 //通过调用接口获取
       if (val == "0") {
-        var data = {//天
+        var data = {//小时
           deviceIds: deviceIds,
           from_time:(this.$dtime(this.rlForm.dateHour).format("YYYY-MM-DD") +" " +this.rlForm.startTime),
            to_time:(this.$dtime(this.rlForm.dateHour).format("YYYY-MM-DD") +   " " +this.rlForm.endTime),
@@ -121,7 +121,14 @@ export default {
           to_time: this.$dtime(this.rlForm.dateDay[1]).format("YYYY-MM-DD") + " " + this.rlForm.endTime,
           dimension: 1
         };
-        this.getDayData(data);
+        if(this.rlForm.dateDay == ''){
+          this.$message({
+          message: '请填入完整信息',
+          type: 'warning'
+        });
+        }else{
+          this.getDayData(data);
+        }
       }else if(val == '2'){//周
           var data = {
           deviceIds: deviceIds,
@@ -129,7 +136,14 @@ export default {
           to_time: this.$dtime(new Date(this.rlForm.dateWeekEnd).getTime()+6*24*3600*1000).format("YYYY-MM-DD"),
           dimension: 2
         };
-        this.getWeekData(data)
+        if(this.rlForm.dateMonthStart == '' || this.dateWeekEnd == ''){
+          this.$message({
+          message: '请填入完整信息',
+          type: 'warning'
+          });
+        }else{
+          this.getWeekData(data)
+        }
       }else{
           var data = {//月
           deviceIds: deviceIds,
@@ -137,7 +151,14 @@ export default {
           to_time: this.getCountDays(this.$dtime(this.rlForm.dateMonthEnd).format("YYYY-MM")),
           dimension: 3
         };
-        this.getMonthData(data)
+        if(this.rlForm.dateMonthStart == '' || this.rlForm.dateMonthEnd==''){
+          this.$message({
+          message: '请填入完整信息',
+          type: 'warning'
+          });
+        }else{
+          this.getMonthData(data)
+        }
       }
     },
     getHourData(data) {

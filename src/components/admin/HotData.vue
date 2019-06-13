@@ -79,7 +79,7 @@ export default {
           time:this.$dtime(new Date()).format('YYYY-MM-DD'),
           staySecond:this.staySecond.time
         }
-       this.$global.httpGet("", "/show/hkrq/byOneDay", data).then(res => {
+       this.$global.httpGet("", "show/hkrq/byOneDay", data).then(res => {
           res.data.forEach(item => {
               var stayTotal = [] 
             this.areaData.push(item.storeAreaName)

@@ -84,11 +84,13 @@ export default {
         from_time: this.$dtime(new Date()).format("YYYY-MM-DD") + " " + "00:00",
         to_time: this.$dtime(new Date()).format("YYYY-MM-DD") + " " + "24:00"
       };
-      this.$global.httpGet("", "/show/hkrl/byday", data).then(res => {
-        this.numTotal = res.data.total[0];
+      this.$global.httpGet("", "show/hkrl/byday", data).then(res => {
+        // console.log(res.data[0])
+        this.numTotal = res.data[0];
       });
-      this.$global.httpGet("", "/show/hkrl/byhour", data).then(res => {
-        var resData = res.data.data;
+      this.$global.httpGet("", "show/hkrl/byhour", data).then(res => {
+        // console.log(res)
+        var resData = res.data;
         if (resData.length < 1) {
           this.$message("没有查询到数据");
         }

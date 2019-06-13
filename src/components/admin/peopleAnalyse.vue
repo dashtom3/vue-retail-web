@@ -67,7 +67,7 @@ export default {
         to_time: this.$dtime(new Date()).format("YYYY-MM-DD") + " " + "24:00",
         type: 4
       };
-      this.$global.httpGet("", "/show/dxmrl/byDetail", data).then(res => {
+      this.$global.httpGet("", "show/dxmrl/byDetail", data).then(res => {
         if(res.data.passengerFlows.length){
           res.data.passengerFlows.forEach(item =>{
             var dateTime = this.$dtime(item.beginTime).format('HH:mm')+'~'+this.$dtime(item.endTime).format('HH:mm')

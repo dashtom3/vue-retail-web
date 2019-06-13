@@ -181,7 +181,14 @@ export default {
         to_time:this.$dtime(this.rqForm.dateDay[1]).format('YYYY-MM-DD')+' '+this.rqForm.endTime,
         staySecond:this.rqForm.quota
       }
-      this.getRQDataByDay(data)
+      if(this.rqForm.dateDay == ''){
+        this.$message({
+          message: '请填入完整信息',
+          type: 'warning'
+          });
+      }else{
+        this.getRQDataByDay(data)
+      }
       }else if(val == '2'){
         var data = {
         deviceIds:null,
@@ -189,7 +196,14 @@ export default {
         to_time:this.$dtime(this.rqForm.dateDay[1]).format('YYYY-MM-DD')+' '+this.rqForm.endTime,
         staySecond:this.rqForm.quota
       }
-      this.getRQWeekDayByeachrts(data)
+      if(this.rqForm.dateDay == ''){
+        this.$message({
+          message: '请填入完整信息',
+          type: 'warning'
+          });
+      }else{
+        this.getRQWeekDayByeachrts(data)
+      }
       }else{
         var data = {
         deviceIds:null,
@@ -197,7 +211,14 @@ export default {
         to_time:this.$dtime(this.rqForm.dateDay[1]).format('YYYY-MM-DD')+' '+this.rqForm.endTime,
         staySecond:this.rqForm.quota
       }
-      this.getRQUnweekDayByeachrts(data)
+      if(this.rqForm.dateDay == ''){
+        this.$message({
+          message: '请填入完整信息',
+          type: 'warning'
+          });
+      }else{
+        this.getRQUnweekDayByeachrts(data)
+      }
       }
     },
     analyseHourEacharts(resData){

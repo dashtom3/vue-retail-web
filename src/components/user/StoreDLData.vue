@@ -90,7 +90,15 @@ export default {
           from_hour:5,
           hours:24
         }
-        this.getDayData(data)
+        if(this.dlForm.dateDay == ''){
+          this.$message({
+          message: '请填入完整信息',
+          type: 'warning'
+          });
+        }else{
+          this.getDayData(data)
+        }
+        
       }
     },
     getDayData(data) {
@@ -108,7 +116,6 @@ export default {
     },
     getHourData(data) {
       this.$global.httpGetWithToken(this, "show/hkdl/byHour", data).then(res => {
-              console.log(res.data[0].data)
               var tableData = []
               res.data[0].data.forEach(item =>{
                 var timeRange = this.$dtime(item.from).format('HH:mm')+'~'+this.$dtime(item.to).format('HH:mm')

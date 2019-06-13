@@ -30,14 +30,14 @@
     </el-form>
     <el-button type="primary" @click="openDialog(downloadForm)" size="mini">生成pdf数据报告</el-button>
     <!-- <a href="http://127.0.0.1:8002/export/download" download>导出数据报告</a> -->
-    <el-dialog title="提示" :visible.sync="dialogVisible" width="35%"  :close-on-click-modal="false"  center>
+    <el-dialog title="提示" :visible.sync="dialogVisible" width="35%" :close-on-click-modal="false" center>
       <div v-loading="loading2" element-loading-text="正在生成报告,请耐心等待" style="height:100px">
-      <div class="dialogTxt">{{showMessage}}</div>
-      <div class="dialog-footer">
-        <el-button @click="dialogVisible = false" size="mini">取 消</el-button>
-        <a v-if="isDisabled==true" class="downloadButton"  @click="exportSure()" href="http://127.0.0.1:8002/export/download" download>确 定</a>
-        <el-button type="primary" v-if="isDisabled==false"  @click="exportSure()" size="mini" >确 定</el-button>
-      </div>
+        <div class="dialogTxt">{{showMessage}}</div>
+        <div class="dialog-footer">
+          <el-button @click="dialogVisible = false" size="mini">取 消</el-button>
+          <a v-if="isDisabled==true" class="downloadButton" @click="exportSure()" href="http://116.62.228.3:8002/export/download" download>确 定</a>
+          <el-button type="primary" v-if="isDisabled==false" @click="exportSure()" size="mini">确 定</el-button>
+        </div>
       </div>
     </el-dialog>
 
@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+import axios from "axios";
 export default {
   name: "",
 
@@ -59,10 +59,10 @@ export default {
         endTime: "20:00"
       },
       dialogVisible: false,
-      closeClick:false,
-      loading2:true,
-      showMessage:'',
-      isDisabled:true,
+      closeClick: false,
+      loading2: true,
+      showMessage: "",
+      isDisabled: true
     };
   },
   mounted() {},
@@ -73,20 +73,19 @@ export default {
           message: "输入框信息不完整!",
           type: "warning"
         });
-      }else{
-        this.dialogVisible = true
-        this.loading2 = true
-        this.getData()
+      } else {
+        this.dialogVisible = true;
+        this.loading2 = true;
+        this.getData();
       }
-      
     },
-    getData(){
+    getData() {
       var data = {
-        id:1,
-        from_time:this.$dtime(this.downloadForm.dateDay[0]).format('YYYY-MM-DD')+' '+this.downloadForm.startTime,
-        to_time:this.$dtime(this.downloadForm.dateDay[1]).format('YYYY-MM-DD')+' '+this.downloadForm.endTime
-      }
-      this.$global.httpGetWithToken(this, "export/pdf", data).then(res => {
+        id: 1,
+        from_time:this.$dtime(this.downloadForm.dateDay[0]).format("YYYY-MM-DD") + " " + this.downloadForm.startTime,
+        to_time:this.$dtime(this.downloadForm.dateDay[1]).format("YYYY-MM-DD") + " " + this.downloadForm.endTime
+      };
+      this.$global.httpGetWithToken(this,"export/pdf", data).then(res => {
                     console.log(res)
                     if(res.status == 1){
                       this.loading2 = false
@@ -99,30 +98,30 @@ export default {
                     }
         });
     },
-    exportSure(){
-      this.dialogVisible = false
+    exportSure() {
+      this.dialogVisible = false;
     }
   }
 };
 </script>
 
 <style  scoped>
-.downloadButton{
+.downloadButton {
   margin-left: 25px;
   width: 20px;
   height: 14px;
-  background: #409EFF;
+  background: #409eff;
   padding: 6px 13px;
   border-radius: 3px;
   cursor: pointer;
   color: #fff;
   font-size: 12px;
 }
-.dialogTxt{
+.dialogTxt {
   /* text-align: center */
 }
-.dialog-footer{
- text-align: center;
- margin-top: 30px;
+.dialog-footer {
+  text-align: center;
+  margin-top: 30px;
 }
 </style>
